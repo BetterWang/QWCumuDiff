@@ -62,13 +62,13 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 	trackWeight_( iConfig.getUntrackedParameter<edm::InputTag>("trackWeight") ),
 	trackCharge_( iConfig.getUntrackedParameter<edm::InputTag>("trackCharge") ),
 	trackRef_( iConfig.getUntrackedParameter<edm::InputTag>("trackRef") ),
+	vertexZ_( iConfig.getUntrackedParameter<edm::InputTag>("vertexZ") ),
 	sigEta_( iConfig.getUntrackedParameter<edm::InputTag>("sigEta") ),
 	sigPhi_( iConfig.getUntrackedParameter<edm::InputTag>("sigPhi") ),
 	sigPt_( iConfig.getUntrackedParameter<edm::InputTag>("sigPt") ),
 	sigWeight_( iConfig.getUntrackedParameter<edm::InputTag>("sigWeight") ),
 	sigTrackRef1_( iConfig.getUntrackedParameter<edm::InputTag>("sigTrackRef1") ),
 	sigTrackRef2_( iConfig.getUntrackedParameter<edm::InputTag>("sigTrackRef2") ),
-	vertexZ_( iConfig.getUntrackedParameter<edm::InputTag>("vertexZ") ),
 	centralityTag_( iConfig.getUntrackedParameter<edm::InputTag>("centrality") )
 {
 	//now do what ever initialization is needed
