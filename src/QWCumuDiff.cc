@@ -184,7 +184,7 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.getByLabel(sigEta_,	sEta);
 	iEvent.getByLabel(sigPhi_,	sPhi);
 	iEvent.getByLabel(sigPt_,	sPt);
-	iEvent.getByLabel(sigTrackRef_,	sRef);
+	iEvent.getByLabel(sigRef_,	sRef);
 	iEvent.getByLabel(sigWeight_, 	sWeight);
 
 	if ( hVz->size() < 1 ) return;
