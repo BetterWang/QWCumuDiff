@@ -55,19 +55,17 @@ class QWCumuDiff : public edm::EDAnalyzer {
 
 		edm::InputTag					trackEta_;
 		edm::InputTag					trackPhi_;
+		edm::InputTag					trackRef_;
 		edm::InputTag					trackPt_;
 		edm::InputTag					trackWeight_;
-		edm::InputTag					trackCharge_;
-		edm::InputTag					trackRef_;
 		edm::InputTag					vertexZ_;
 
 		edm::InputTag					sigEta_;
 		edm::InputTag					sigPhi_;
 		edm::InputTag					sigPt_;
+		edm::InputTag					sigRef_;
 		edm::InputTag					sigWeight_;
 
-		edm::InputTag					sigTrackRef1_;
-		edm::InputTag					sigTrackRef2_;
 
 		edm::InputTag					centralityTag_;
 
@@ -82,39 +80,25 @@ class QWCumuDiff : public edm::EDAnalyzer {
 		double	rfpminpt_, rfpmaxpt_;
 		double	poiminpt_, poimaxpt_;
 
-		bool	b2PartGap_;
-		double	dEtaGap_;
-
 		int	cmode_;
-
-		int	nvtx_;
-
 	/////////////////////////////////////////////
 		TTree * trV;
 
 		int gNoff;
 		int gMult;
-
-		double rQGap[7];
-		double wQGap[7];
-
-		double rQpGap[7][24];
-		double wQpGap[7][24];
-
-		double rQetaGap[7][24];
-		double wQetaGap[7][24];
+		int gV0;
 
 		double rQ[7][4];
 		double iQ[7][4];
 		double wQ[7][4];
 
-		double rQp[7][4][24];
-		double iQp[7][4][24];
-		double wQp[7][4][24];
+		double rVQp[7][4][24];
+		double iVQp[7][4][24];
+		double wVQp[7][4][24];
 
-		double rQeta[7][4][24];
-		double iQeta[7][4][24];
-		double wQeta[7][4][24];
+		double rVQeta[7][4][24];
+		double iVQeta[7][4][24];
+		double wVQeta[7][4][24];
 
 		correlations::HarmonicVector	hc[7];
 		correlations::QVector		q[7];

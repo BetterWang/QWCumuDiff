@@ -56,21 +56,23 @@ using namespace std;
 // constructors and destructor
 //
 QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
-	trackEta_( iConfig.getUntrackedParameter<edm::InputTag>("trackEta") ),
-	trackPhi_( iConfig.getUntrackedParameter<edm::InputTag>("trackPhi") ),
-	trackPt_( iConfig.getUntrackedParameter<edm::InputTag>("trackPt") ),
-	trackWeight_( iConfig.getUntrackedParameter<edm::InputTag>("trackWeight") ),
-	trackCharge_( iConfig.getUntrackedParameter<edm::InputTag>("trackCharge") ),
-	trackRef_( iConfig.getUntrackedParameter<edm::InputTag>("trackRef") ),
 	vertexZ_( iConfig.getUntrackedParameter<edm::InputTag>("vertexZ") ),
-	sigEta_( iConfig.getUntrackedParameter<edm::InputTag>("sigEta") ),
-	sigPhi_( iConfig.getUntrackedParameter<edm::InputTag>("sigPhi") ),
-	sigPt_( iConfig.getUntrackedParameter<edm::InputTag>("sigPt") ),
-	sigWeight_( iConfig.getUntrackedParameter<edm::InputTag>("sigWeight") ),
-	sigTrackRef1_( iConfig.getUntrackedParameter<edm::InputTag>("sigTrackRef1") ),
-	sigTrackRef2_( iConfig.getUntrackedParameter<edm::InputTag>("sigTrackRef2") ),
 	centralityTag_( iConfig.getUntrackedParameter<edm::InputTag>("centrality") )
 {
+	const edm::ParameterSet& track = iConfig.getUntrackedParameter<edm::ParameterSet>("trackSet");
+	trackEta_ = track.getUntrackedParameter<edm::InputTag>("Eta");
+	trackPhi_ = track.getUntrackedParameter<edm::InputTag>("Phi");
+	trackRef_ = track.getUntrackedParameter<edm::InputTag>("Ref");
+	trackPt_  = track.getUntrackedParameter<edm::InputTag>("Pt");
+	trackWeight_  = track.getUntrackedParameter<edm::InputTag>("Weight");
+
+	const edm::ParameterSet& signal = iConfig.getUntrackedParameter<edm::ParameterSet>("sigSet");
+	sigEta_ = signal.getUntrackedParameter<edm::InputTag>("Eta");
+	sigPhi_ = signal.getUntrackedParameter<edm::InputTag>("Phi");
+	sigPt_  = signal.getUntrackedParameter<edm::InputTag>("Pt");
+	sigRef_ = signal.getUntrackedParameter<edm::InputTag>("Ref");
+	sigWeight_ = signal.getUntrackedParameter<edm::InputTag>("Weight");
+
 	//now do what ever initialization is needed
 	minvz_ = iConfig.getUntrackedParameter<double>("minvz", -15.);
 	maxvz_ = iConfig.getUntrackedParameter<double>("maxvz", 15.);
@@ -78,18 +80,14 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 	rfpmineta_ = iConfig.getUntrackedParameter<double>("rfpmineta", -2.4);
 	rfpmaxeta_ = iConfig.getUntrackedParameter<double>("rfpmaxeta", 2.4);
 	rfpminpt_ = iConfig.getUntrackedParameter<double>("rfpminpt", 0.3);
-	rfpmaxpt_ = iConfig.getUntrackedParameter<double>("rfpmaxpt", 100);
+	rfpmaxpt_ = iConfig.getUntrackedParameter<double>("rfpmaxpt", 3.0);
 
 	poimineta_ = iConfig.getUntrackedParameter<double>("poimineta", -2.4);
 	poimaxeta_ = iConfig.getUntrackedParameter<double>("poimaxeta", 2.4);
 	poiminpt_ = iConfig.getUntrackedParameter<double>("poiminpt", 0.3);
 	poimaxpt_ = iConfig.getUntrackedParameter<double>("poimaxpt", 3.0);
 
-	b2PartGap_ = iConfig.getUntrackedParameter<bool>("b2PartGap", true);
-	dEtaGap_ = iConfig.getUntrackedParameter<double>("etaGap", 2.);
-
 	cmode_ = iConfig.getUntrackedParameter<int>("cmode", 1);
-	nvtx_ = iConfig.getUntrackedParameter<int>("nvtx", 100);
 
 	ptBin_ = iConfig.getUntrackedParameter< std::vector<double> >("ptBin");
 	etaBin_ = iConfig.getUntrackedParameter< std::vector<double> >("etaBin");
@@ -97,20 +95,19 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 	Neta_ = etaBin_.size();
 
         consumes<int>(centralityTag_);
+        consumes<std::vector<double> >(vertexZ_);
+
         consumes<std::vector<double> >(trackEta_);
         consumes<std::vector<double> >(trackPhi_);
         consumes<std::vector<double> >(trackPt_);
-        consumes<std::vector<double> >(trackWeight_);
-        consumes<std::vector<double> >(trackCharge_);
         consumes<std::vector<double> >(trackRef_);
-        consumes<std::vector<double> >(vertexZ_);
+        consumes<std::vector<double> >(trackWeight_);
 
         consumes<std::vector<double> >(sigEta_);
         consumes<std::vector<double> >(sigPhi_);
         consumes<std::vector<double> >(sigPt_);
+        consumes<std::vector<double> >(sigRef_);
         consumes<std::vector<double> >(sigWeight_);
-        consumes<std::vector<double> >(sigTrackRef1_);
-        consumes<std::vector<double> >(sigTrackRef2_);
 
 	for ( int n = 1; n < 7; n++ ) {
 		q[n] = correlations::QVector(0, 0, true);
@@ -121,29 +118,21 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 	trV = fs->make<TTree>("trV", "trV");
 	trV->Branch("Noff", &gNoff, "Noff/I");
 	trV->Branch("Mult", &gMult, "Mult/I");
+	trV->Branch("NV0", &gMult, "gV0/I");
 
-	trV->Branch("wQGap22", &wQGap[2], "wQGap22/D");
-	trV->Branch("wQpGap22", wQpGap[2], "wQpGap22[24]/D");
-	trV->Branch("wQetaGap22", wQetaGap[2], "wQetaGap22[24]/D");
-
-
-	for ( int n = 2; n < 7; n++ ) {
-		trV->Branch(Form("rQGap%i%i", n, 2), &rQGap[n], Form("rQGap%i%i/D", n, 2));
-		trV->Branch(Form("rQpGap%i%i", n, 2), rQpGap[n], Form("rQpGap%i%i[24]/D", n, 2));
-		trV->Branch(Form("rQetaGap%i%i", n, 2), rQetaGap[n], Form("rQetaGap%i%i[24]/D", n, 2));
-	}
 
 	for ( int np = 0; np < 4; np++ ) {
 		for ( int n = 2; n < 7; n++ ) {
 			trV->Branch(Form("rQ%i%i", n, 2+2*np), &rQ[n][np], Form("rQ%i%i/D", n, 2+2*np));
-			trV->Branch(Form("rQ%i%ip", n, 2+2*np), rQp[n][np], Form("rQ%i%ip[24]/D", n, 2+2*np));
-			trV->Branch(Form("rQ%i%ieta", n, 2+2*np), rQeta[n][np], Form("rQ%i%ieta[24]/D", n, 2+2*np));
+			trV->Branch(Form("iQ%i%i", n, 2+2*np), &iQ[n][np], Form("iQ%i%i/D", n, 2+2*np));
+
+			trV->Branch(Form("rVQp%i%i", n, 2+2*np), &rVQp[n][np], Form("rVQp%i%i[24]/D", n, 2+2*np));
+			trV->Branch(Form("iVQp%i%i", n, 2+2*np), &iVQp[n][np], Form("iVQp%i%i[24]/D", n, 2+2*np));
 		}
 
 		int n = 2;
 		trV->Branch(Form("wQ%i%i", n, 2+2*np), &wQ[n][np], Form("wQ%i%i/D", n, 2+2*np));
-		trV->Branch(Form("wQ%i%ip", n, 2+2*np), wQp[n][np], Form("wQ%i%ip[24]/D", n, 2+2*np));
-		trV->Branch(Form("wQ%i%ieta", n, 2+2*np), wQeta[n][np], Form("wQ%i%ieta[24]/D", n, 2+2*np));
+		trV->Branch(Form("wVQp%i%i", n, 2+2*np), &wVQp[n][np], Form("wVQp%i%i[24]/D", n, 2+2*np));
 	}
 
 	cout << " cmode_ = " << cmode_ << endl;
@@ -169,35 +158,33 @@ void
 QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-//	analyzeData(iEvent, iSetup);
+	Handle<std::vector<double> >	hVz;
 
 	Handle<std::vector<double> >	hEta;
 	Handle<std::vector<double> >	hPhi;
 	Handle<std::vector<double> >	hPt;
 	Handle<std::vector<double> >	hWeight;
-	Handle<std::vector<double> >	hCharge;
 	Handle<std::vector<double> >	hRef;
-	Handle<std::vector<double> >	hVz;
+
 
 	Handle<std::vector<double> >	sEta;
 	Handle<std::vector<double> >	sPhi;
 	Handle<std::vector<double> >	sPt;
 	Handle<std::vector<double> >	sWeight;
-	Handle<std::vector<double> >	sRef1;
-	Handle<std::vector<double> >	sRef2;
+	Handle<std::vector<double> >	sRef;
 
 	iEvent.getByLabel(trackEta_,	hEta);
 	iEvent.getByLabel(trackPhi_,	hPhi);
 	iEvent.getByLabel(trackPt_,	hPt);
-	iEvent.getByLabel(trackWeight_, hWeight);
 	iEvent.getByLabel(trackRef_,	hRef);
+	iEvent.getByLabel(trackWeight_, hWeight);
 
-	iEvent.getByLabel(trackCharge_, hCharge);
 	iEvent.getByLabel(vertexZ_, 	hVz);
 
 	iEvent.getByLabel(sigEta_,	sEta);
 	iEvent.getByLabel(sigPhi_,	sPhi);
 	iEvent.getByLabel(sigPt_,	sPt);
+	iEvent.getByLabel(sigTrackRef_,	sRef);
 	iEvent.getByLabel(sigWeight_, 	sWeight);
 
 	if ( hVz->size() < 1 ) return;
@@ -221,29 +208,20 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 
 	for ( int n = 0; n < 7; n++ ) {
-		rQGap[n] = 0;
-		wQGap[n] = 0;
-
 		for ( int np = 0; np < 4; np++ ) {
 			rQ[n][np] = 0;
 			iQ[n][np] = 0;
 			wQ[n][np] = 0;
 
 			for ( int j = 0; j < 24; j++ ) {
-				rQp[n][np][j] = 0;
-				iQp[n][np][j] = 0;
-				wQp[n][np][j] = 0;
+				rVQp[n][np][j] = 0;
+				iVQp[n][np][j] = 0;
+				wVQp[n][np][j] = 0;
 
-				rQeta[n][np][j] = 0;
-				iQeta[n][np][j] = 0;
-				wQeta[n][np][j] = 0;
+				rVQeta[n][np][j] = 0;
+				iVQeta[n][np][j] = 0;
+				wVQeta[n][np][j] = 0;
 			}
-		}
-		for ( int j = 0; j < 24; j++ ) {
-			rQpGap[n][j] = 0;
-			wQpGap[n][j] = 0;
-			rQetaGap[n][j] = 0;
-			wQetaGap[n][j] = 0;
 		}
 	}
 
@@ -251,45 +229,6 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		if ( RFP[i] != 1 ) continue;
 		for ( int n = 1; n < 7; n++ ) {
 			q[n].fill((*hPhi)[i], (*hWeight)[i]);
-		}
-	}
-	if ( b2PartGap_ ) {
-		for ( int i = 0; i < sz; i++ ) {
-			if ( RFP[i] != 1 ) continue;
-			for ( int n = 1; n < 7; n++ ) {
-				// ref 2part gap
-				for ( int j = i+1; j < sz; j++ ) {
-					if ( RFP[j] != 1 ) continue;
-					if ( fabs((*hEta)[i] - (*hEta)[j]) < dEtaGap_ ) continue;
-					rQGap[n] += cos( n*( (*hPhi)[j] - (*hPhi)[i] ) ) * (*hWeight)[i] * (*hWeight)[j];
-					wQGap[n] += (*hWeight)[i] * (*hWeight)[j];
-				}
-			}
-		}
-		for ( int i = 0; i < sz; i++ ) {
-			if ( RFP[i] != 1 ) continue;
-			for ( int n = 1; n < 7; n++ ) {
-				for ( int j = 0; j < sigsz; j++ ) {
-					// pT differential
-					if ( (*hRef)[i] == (*sRef1)[j] or (*hRef)[i] == (*sRef2)[j] ) continue;
-					if ( (*sEta)[j] > poimaxeta_ or (*sEta)[j] < poimineta_ ) continue;
-					int ipt = -1;
-					while ( (*sPt)[j] > ptBin_[ipt+1] ) ipt++;
-					if ( ipt >= 24 or ipt < 0 ) continue;
-					rQpGap[n][ipt] += cos( n*( (*hPhi)[i] - (*sPhi)[j] ) ) * (*hWeight)[i] * (*sWeight)[j];
-					wQpGap[n][ipt] += (*hWeight)[i] * (*sWeight)[j];
-				}
-				for ( int j = 0; j < sigsz; j++ ) {
-					// eta diff
-					if ( (*hRef)[i] == (*sRef1)[j] or (*hRef)[i] == (*sRef2)[j] ) continue;
-					if ( (*sPt)[j] > poimaxpt_ or (*sPt)[j] < poiminpt_ ) continue;
-					int ieta = -1;
-					while ( (*sEta)[j] > etaBin_[ieta+1] ) ieta++;
-					if ( ieta >= 24 or ieta < 0 ) continue;
-					rQetaGap[n][ieta] += cos( n*( (*hPhi)[i] - (*sPhi)[j] ) ) * (*hWeight)[i] * (*sWeight)[j];
-					wQetaGap[n][ieta] += (*hWeight)[i] * (*sWeight)[j];
-				}
-			}
 		}
 	}
 
@@ -319,11 +258,10 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 				wt = 0;
 				for ( int i = 0; i < sigsz; i++ ) {
 					if ( (*sEta)[i] < poimineta_ or (*sEta)[i] > poimaxeta_ ) continue;
-					//if ( (*sPt)[i] < poiminpt_ or (*sPt)[i] > poimaxpt_ ) continue;
 					if ( (*sPt)[i] < ptBin_[ipt] or (*sPt)[i] > ptBin_[ipt+1] ) continue;
 					correlations::QVector tq = q[n];
 					for ( int j = 0; j < sz; j++ ) {
-						if ( RFP[j] and ( (*sRef1)[i] == (*hRef)[j] or (*sRef2)[i] == (*hRef)[j] ) ) {
+						if ( RFP[j] and ( (*sRef)[2*i] == (*hRef)[j] or (*sRef)[2*i+1] == (*hRef)[j] ) ) {
 							tq.unfill( (*hPhi)[j], (*hWeight)[j] );
 						}
 					}
@@ -344,9 +282,9 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 					wt += (*sWeight)[i] * r.weight();
 					delete cq;
 				}
-				rQp[n][np][ipt] = qp.real();
-				iQp[n][np][ipt] = qp.imag();
-				wQp[n][np][ipt] = wt;
+				rVQp[n][np][ipt] = qp.real();
+				iVQp[n][np][ipt] = qp.imag();
+				wVQp[n][np][ipt] = wt;
 			}
 			// eta differential
 			for ( int ieta = 0; ieta < Neta_; ieta++ ) {
@@ -357,7 +295,7 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 					if ( (*sEta)[i] < etaBin_[ieta] || (*sEta)[i] > etaBin_[ieta+1] ) continue;
 					correlations::QVector tq = q[n];
 					for ( int j = 0; j < sz; j++ ) {
-						if ( RFP[j] and ( (*sRef1)[i] == (*hRef)[j] or (*sRef2)[i] == (*hRef)[j] ) ) {
+						if ( RFP[j] and ( (*sRef)[2*i] == (*hRef)[j] or (*sRef)[2*i+1] == (*hRef)[j] ) ) {
 							tq.unfill( (*hPhi)[j], (*hWeight)[j] );
 						}
 					}
@@ -378,9 +316,9 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 					wt += (*sWeight)[i] * r.weight();
 					delete cq;
 				}
-				rQeta[n][np][ieta] = qp.real();
-				iQeta[n][np][ieta] = qp.imag();
-				wQeta[n][np][ieta] = wt;
+				rVQeta[n][np][ieta] = qp.real();
+				iVQeta[n][np][ieta] = qp.imag();
+				wVQeta[n][np][ieta] = wt;
 			}
 		}
 	}
@@ -389,6 +327,7 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.getByLabel(centralityTag_,ch);
 	gNoff = *ch;
 	gMult = rfp_sz;
+	gV0 = sigsz;
 
 //	t->RunId = iEvent.id().run();
 //	t->EventId = iEvent.id().event();
