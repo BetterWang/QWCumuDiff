@@ -5,6 +5,7 @@ cumu
 PbPb2015_cumu
 pPb
 test/*
+!test/pPb_HM_eff.py
 !test/qw*.py
 !test/crab_*.py
 !test/run*.sh
