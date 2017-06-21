@@ -143,6 +143,12 @@ process.QWV0EventKs = cms.EDProducer('QWV0VectProducer'
 		, vertexSrc = cms.untracked.InputTag('offlinePrimaryVertices', "")
 		, trackSrc = cms.untracked.InputTag('generalTracks')
 		, V0Src = cms.untracked.InputTag('generalV0CandidatesNew', 'Kshort')
+		, Massmin = cms.untracked.double(0.467)
+		, Massmax = cms.untracked.double(0.523)
+		, DecayXYZMin = cms.untracked.double(5.0)
+		, DecayXYZMax = cms.untracked.double(999999999999.)
+		, ThetaXYZMin = cms.untracked.double(0.999)
+		, ThetaXYZMax = cms.untracked.double(999999999999.)
 		)
 
 process.load('pPb_HM_eff')
@@ -248,5 +254,5 @@ process.schedule = cms.Schedule(
 	process.ana150,
 #	process.ana185,
 #	process.ana250,
-#	process.out
+	process.out
 )
