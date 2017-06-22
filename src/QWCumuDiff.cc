@@ -68,12 +68,16 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 
 	const edm::ParameterSet& signal = iConfig.getUntrackedParameter<edm::ParameterSet>("sigSet");
 	sigPhi_ = signal.getUntrackedParameter<edm::InputTag>("Phi");
+	sigPt_  = signal.getUntrackedParameter<edm::InputTag>("Pt");
 	sigRef_ = signal.getUntrackedParameter<edm::InputTag>("Ref");
 	sigWeight_ = signal.getUntrackedParameter<edm::InputTag>("Weight");
 
 	//now do what ever initialization is needed
 	minvz_ = iConfig.getUntrackedParameter<double>("minvz", -15.);
 	maxvz_ = iConfig.getUntrackedParameter<double>("maxvz", 15.);
+
+	ptBin_ = iConfig.getUntrackedParameter< std::vector<double> >("ptBin");
+	Npt_ = ptBin_.size();
 
 	rfpmineta_ = iConfig.getUntrackedParameter<double>("rfpmineta", -2.4);
 	rfpmaxeta_ = iConfig.getUntrackedParameter<double>("rfpmaxeta", 2.4);
@@ -92,6 +96,7 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
         consumes<std::vector<double> >(trackWeight_);
 
         consumes<std::vector<double> >(sigPhi_);
+        consumes<std::vector<double> >(sigPt_);
         consumes<std::vector<double> >(sigRef_);
         consumes<std::vector<double> >(sigWeight_);
 
@@ -112,8 +117,8 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 			trV->Branch(Form("rQ%i%i", n, 2+2*np), &rQ[n][np], Form("rQ%i%i/D", n, 2+2*np));
 			trV->Branch(Form("iQ%i%i", n, 2+2*np), &iQ[n][np], Form("iQ%i%i/D", n, 2+2*np));
 
-			trV->Branch(Form("rVQp%i%i", n, 2+2*np), &rVQp[n][np], Form("rVQp%i%i/D", n, 2+2*np));
-			trV->Branch(Form("iVQp%i%i", n, 2+2*np), &iVQp[n][np], Form("iVQp%i%i/D", n, 2+2*np));
+			trV->Branch(Form("rVQp%i%i", n, 2+2*np), &rVQp[n][np], Form("rVQp%i%i[24]/D", n, 2+2*np));
+			trV->Branch(Form("iVQp%i%i", n, 2+2*np), &iVQp[n][np], Form("iVQp%i%i[24]/D", n, 2+2*np));
 		}
 
 		int n = 2;
@@ -169,12 +174,12 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 //	iEvent.getByLabel(sigEta_,	sEta);
 	iEvent.getByLabel(sigPhi_,	sPhi);
-//	iEvent.getByLabel(sigPt_,	sPt);
+	iEvent.getByLabel(sigPt_,	sPt);
 	iEvent.getByLabel(sigRef_,	sRef);
 	iEvent.getByLabel(sigWeight_, 	sWeight);
 
 	if ( hVz->size() < 1 ) return;
-	if ( (*hVz)[0] > maxvz_ or (*hVz)[0] < minvz_ ) return;
+	if ( fabs((*hVz)[0]) > maxvz_ or fabs((*hVz)[0]) < minvz_ ) return;
 	int sz = int(hEta->size());
 	if ( sz == 0 ) return;
 	int sigsz = int(sPhi->size());
@@ -199,10 +204,11 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			iQ[n][np] = 0;
 			wQ[n][np] = 0;
 
-			rVQp[n][np] = 0;
-			iVQp[n][np] = 0;
-			wVQp[n][np] = 0;
-
+			for ( int i = 0; i < 24; i++ ) {
+				rVQp[n][np][i] = 0;
+				iVQp[n][np][i] = 0;
+				wVQp[n][np][i] = 0;
+			}
 		}
 	}
 
@@ -233,34 +239,38 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		for ( int np = 0; np < 4; np++ ) {
 			correlations::Complex qp = 0;
 			double wt = 0;
-			for ( int i = 0; i < sigsz; i++ ) {
-				correlations::QVector tq = q[n];
-				for ( int j = 0; j < sz; j++ ) {
-					if ( RFP[j] and ( (*sRef)[2*i] == (*hRef)[j] or (*sRef)[2*i+1] == (*hRef)[j] ) ) {
-						//std::cout << " --> sRef in RFP " << (*hRef)[j] << " " << (*sRef)[2*i] << " " << (*sRef)[2*i+1] << endl;
-						tq.unfill( (*hPhi)[j], (*hWeight)[j] );
+			for ( int ipt = 0; ipt < Npt_; ipt++ ) {
+				qp = 0;
+				wt = 0;
+				for ( int i = 0; i < sigsz; i++ ) {
+					if ( (*sPt)[i] < ptBin_[ipt] or (*sPt)[i] > ptBin_[ipt+1] ) continue;
+					correlations::QVector tq = q[n];
+					for ( int j = 0; j < sz; j++ ) {
+						if ( RFP[j] and ( (*sRef)[2*i] == (*hRef)[j] or (*sRef)[2*i+1] == (*hRef)[j] ) ) {
+							tq.unfill( (*hPhi)[j], (*hWeight)[j] );
+						}
 					}
+					correlations::FromQVector *cq = 0;
+					switch ( cmode_ ) {
+						case 1:
+							cq = new correlations::closed::FromQVector(tq);
+							break;
+						case 2:
+							cq = new correlations::recurrence::FromQVector(tq);
+							break;
+						case 3:
+							cq = new correlations::recursive::FromQVector(tq);
+							break;
+					}
+					correlations::Result r = cq->calculate(np*2+1, hc[n]);
+					qp += (*sWeight)[i] * correlations::Complex( TMath::Cos((*sPhi)[i] * n) , TMath::Sin((*sPhi)[i] * n) ) * r.sum();
+					wt += (*sWeight)[i] * r.weight();
+					delete cq;
 				}
-				correlations::FromQVector *cq = 0;
-				switch ( cmode_ ) {
-					case 1:
-						cq = new correlations::closed::FromQVector(tq);
-						break;
-					case 2:
-						cq = new correlations::recurrence::FromQVector(tq);
-						break;
-					case 3:
-						cq = new correlations::recursive::FromQVector(tq);
-						break;
-				}
-				correlations::Result r = cq->calculate(np*2+1, hc[n]);
-				qp += (*sWeight)[i] * correlations::Complex( TMath::Cos((*sPhi)[i] * n) , TMath::Sin((*sPhi)[i] * n) ) * r.sum();
-				wt += (*sWeight)[i] * r.weight();
-				delete cq;
+				rVQp[n][np][ipt] = qp.real();
+				iVQp[n][np][ipt] = qp.imag();
+				wVQp[n][np][ipt] = wt;
 			}
-			rVQp[n][np] = qp.real();
-			iVQp[n][np] = qp.imag();
-			wVQp[n][np] = wt;
 		}
 	}
 
