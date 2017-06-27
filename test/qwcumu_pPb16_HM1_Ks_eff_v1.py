@@ -203,11 +203,10 @@ process.vectEta150Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWV0E
 process.vectEta185Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWV0EventKs', 'eta'))
 process.vectEta250Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWV0EventKs', 'eta'))
 
-process.vectPt120Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cend = cms.untracked.double(100))
-process.vectPt150Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cend = cms.untracked.double(100))
-process.vectPt185Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cend = cms.untracked.double(100))
-process.vectPt250Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cend = cms.untracked.double(100))
-
+process.vectPt120Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
+process.vectPt150Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
+process.vectPt185Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
+process.vectPt250Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
 
 process.vectPhi120 = process.vectPhi.clone()
 process.vectPhi150 = process.vectPhi.clone()

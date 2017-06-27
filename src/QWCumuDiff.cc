@@ -123,7 +123,7 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 
 		int n = 2;
 		trV->Branch(Form("wQ%i%i", n, 2+2*np), &wQ[n][np], Form("wQ%i%i/D", n, 2+2*np));
-		trV->Branch(Form("wVQp%i%i", n, 2+2*np), &wVQp[n][np], Form("wVQp%i%i/D", n, 2+2*np));
+		trV->Branch(Form("wVQp%i%i", n, 2+2*np), wVQp[n][np], Form("wVQp%i%i[24]/D", n, 2+2*np));
 	}
 
 	cout << " cmode_ = " << cmode_ << endl;
