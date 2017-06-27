@@ -169,6 +169,7 @@ process.QWCumuDiff = cms.EDAnalyzer('QWCumuDiff',
 			Weight = cms.untracked.InputTag('QWEvent', 'weight'),
 			),
 		sigSet = cms.untracked.PSet(
+			Eta = cms.untracked.InputTag('QWV0EventKs', 'eta'),
 			Phi = cms.untracked.InputTag('QWV0EventKs', 'phi'),
 			Ref = cms.untracked.InputTag('QWV0EventKs', 'Refs'),
 			Pt = cms.untracked.InputTag('QWV0EventKs', 'pt'),

@@ -98,6 +98,7 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
         consumes<std::vector<double> >(trackRef_);
         consumes<std::vector<double> >(trackWeight_);
 
+        consumes<std::vector<double> >(sigEta_);
         consumes<std::vector<double> >(sigPhi_);
         consumes<std::vector<double> >(sigPt_);
         consumes<std::vector<double> >(sigRef_);
@@ -128,14 +129,15 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 		trV->Branch(Form("wQ%i%i", n, 2+2*np), &wQ[n][np], Form("wQ%i%i/D", n, 2+2*np));
 		trV->Branch(Form("wVQp%i%i", n, 2+2*np), wVQp[n][np], Form("wVQp%i%i[24]/D", n, 2+2*np));
 	}
+	int n = 2;
+	trV->Branch(Form("wQGap%i", n), &wQGap[n], Form("wQGap%i/D", n));
+	trV->Branch(Form("wV0QGap%i", n), wV0QGap[n], Form("wV0QGap%i[24]/D", n));
 	for ( int n = 2; n < 7; n++ ) {
-		trV->Branch(Form("rQGap%i", n), rQGap[n], Form("rQGap%i/D", n));
-//		trV->Branch(Form("iQGap%i", n), iQGap[n], Form("iQGap%i/D", n));
-		trV->Branch(Form("wQGap%i", n), wQGap[n], Form("wQGap%i/D", n));
+		trV->Branch(Form("rQGap%i", n), &rQGap[n], Form("rQGap%i/D", n));
+//		trV->Branch(Form("iQGap%i", n), &iQGap[n], Form("iQGap%i/D", n));
 
 		trV->Branch(Form("rV0QGap%i", n), rV0QGap[n], Form("rV0QGap%i[24]/D", n));
 //		trV->Branch(Form("iV0QGap%i", n), iV0QGap[n], Form("iV0QGap%i[24]/D", n));
-		trV->Branch(Form("wV0QGap%i", n), wV0QGap[n], Form("wV0QGap%i[24]/D", n));
 	}
 
 	cout << " cmode_ = " << cmode_ << endl;
@@ -262,7 +264,7 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		if ( RFP[i] != 1 ) continue;
 		for ( int j = i+1; j < sz; j++ ) {
 			if ( RFP[j] != 1 ) continue;
-			if ( fabs( hEta[i] - hEta[j] ) < dEtaGap_ ) continue;
+			if ( fabs( (*hEta)[i] - (*hEta)[j] ) < dEtaGap_ ) continue;
 			for ( int n = 2; n < 7; n++ ) {
 				rQGap[n] += cos( n*( (*hPhi)[i] - (*hPhi)[j] ) ) * (*hWeight)[i] * (*hWeight)[j];
 				wQGap[n] += (*hWeight)[i] * (*hWeight)[j];
@@ -276,7 +278,7 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		for ( int j = 0; j < sz; j++ ) {
 			if ( RFP[j] != 1 ) continue;
 			if ( (*sRef)[2*i] == (*hRef)[j] or (*sRef)[2*i+1] == (*hRef)[j] ) continue;
-			if ( fabs( hEta[i] - hEta[j] ) < dEtaGap_ ) continue;
+			if ( fabs( (*hEta)[i] - (*hEta)[j] ) < dEtaGap_ ) continue;
 
 			for ( int n = 2; n < 7; n++ ) {
 				rV0QGap[n][ipt] += cos( n*( (*sPhi)[i] - (*hPhi)[j] ) ) * (*sWeight)[i] * (*hWeight)[j];
