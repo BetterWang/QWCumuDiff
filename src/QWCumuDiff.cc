@@ -67,6 +67,7 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 	trackWeight_  = track.getUntrackedParameter<edm::InputTag>("Weight");
 
 	const edm::ParameterSet& signal = iConfig.getUntrackedParameter<edm::ParameterSet>("sigSet");
+	sigEta_ = signal.getUntrackedParameter<edm::InputTag>("Eta");
 	sigPhi_ = signal.getUntrackedParameter<edm::InputTag>("Phi");
 	sigPt_  = signal.getUntrackedParameter<edm::InputTag>("Pt");
 	sigRef_ = signal.getUntrackedParameter<edm::InputTag>("Ref");
@@ -83,6 +84,8 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 	rfpmaxeta_ = iConfig.getUntrackedParameter<double>("rfpmaxeta", 2.4);
 	rfpminpt_ = iConfig.getUntrackedParameter<double>("rfpminpt", 0.3);
 	rfpmaxpt_ = iConfig.getUntrackedParameter<double>("rfpmaxpt", 3.0);
+
+	dEtaGap_ = iConfig.getUntrackedParameter<double>("EtaGap", 2.0);
 
 	cmode_ = iConfig.getUntrackedParameter<int>("cmode", 1);
 
@@ -115,15 +118,24 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 	for ( int np = 0; np < 4; np++ ) {
 		for ( int n = 2; n < 7; n++ ) {
 			trV->Branch(Form("rQ%i%i", n, 2+2*np), &rQ[n][np], Form("rQ%i%i/D", n, 2+2*np));
-			trV->Branch(Form("iQ%i%i", n, 2+2*np), &iQ[n][np], Form("iQ%i%i/D", n, 2+2*np));
+//			trV->Branch(Form("iQ%i%i", n, 2+2*np), &iQ[n][np], Form("iQ%i%i/D", n, 2+2*np));
 
 			trV->Branch(Form("rVQp%i%i", n, 2+2*np), &rVQp[n][np], Form("rVQp%i%i[24]/D", n, 2+2*np));
-			trV->Branch(Form("iVQp%i%i", n, 2+2*np), &iVQp[n][np], Form("iVQp%i%i[24]/D", n, 2+2*np));
+//			trV->Branch(Form("iVQp%i%i", n, 2+2*np), &iVQp[n][np], Form("iVQp%i%i[24]/D", n, 2+2*np));
 		}
 
 		int n = 2;
 		trV->Branch(Form("wQ%i%i", n, 2+2*np), &wQ[n][np], Form("wQ%i%i/D", n, 2+2*np));
 		trV->Branch(Form("wVQp%i%i", n, 2+2*np), wVQp[n][np], Form("wVQp%i%i[24]/D", n, 2+2*np));
+	}
+	for ( int n = 2; n < 7; n++ ) {
+		trV->Branch(Form("rQGap%i", n), rQGap[n], Form("rQGap%i/D", n));
+//		trV->Branch(Form("iQGap%i", n), iQGap[n], Form("iQGap%i/D", n));
+		trV->Branch(Form("wQGap%i", n), wQGap[n], Form("wQGap%i/D", n));
+
+		trV->Branch(Form("rV0QGap%i", n), rV0QGap[n], Form("rV0QGap%i[24]/D", n));
+//		trV->Branch(Form("iV0QGap%i", n), iV0QGap[n], Form("iV0QGap%i[24]/D", n));
+		trV->Branch(Form("wV0QGap%i", n), wV0QGap[n], Form("wV0QGap%i[24]/D", n));
 	}
 
 	cout << " cmode_ = " << cmode_ << endl;
@@ -172,7 +184,7 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	iEvent.getByLabel(vertexZ_, 	hVz);
 
-//	iEvent.getByLabel(sigEta_,	sEta);
+	iEvent.getByLabel(sigEta_,	sEta);
 	iEvent.getByLabel(sigPhi_,	sPhi);
 	iEvent.getByLabel(sigPt_,	sPt);
 	iEvent.getByLabel(sigRef_,	sRef);
@@ -210,6 +222,16 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 				wVQp[n][np][i] = 0;
 			}
 		}
+
+		rQGap[n] = 0;
+		iQGap[n] = 0;
+		wQGap[n] = 0;
+
+		for ( int i = 0; i < 24; i++ ) {
+			rV0QGap[n][i] = 0;
+			iV0QGap[n][i] = 0;
+			wV0QGap[n][i] = 0;
+		}
 	}
 
 	for ( int i = 0; i < sz; i++ ) {
@@ -227,11 +249,39 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 
 	// RFP
-	for ( int n = 1; n < 7; n++ ) {
+	for ( int n = 2; n < 7; n++ ) {
 		for ( int np = 0; np < 4; np++ ) {
 			rQ[n][np] = r[n][np].sum().real();
 			iQ[n][np] = r[n][np].sum().imag();
 			wQ[n][np] = r[n][np].weight();
+		}
+	}
+
+	// 2part RFP
+	for ( int i = 0; i < sz; i++ ) {
+		if ( RFP[i] != 1 ) continue;
+		for ( int j = i+1; j < sz; j++ ) {
+			if ( RFP[j] != 1 ) continue;
+			if ( fabs( hEta[i] - hEta[j] ) < dEtaGap_ ) continue;
+			for ( int n = 2; n < 7; n++ ) {
+				rQGap[n] += cos( n*( (*hPhi)[i] - (*hPhi)[j] ) ) * (*hWeight)[i] * (*hWeight)[j];
+				wQGap[n] += (*hWeight)[i] * (*hWeight)[j];
+			}
+		}
+	}
+
+	for ( int i = 0; i < sigsz; i++ ) {
+		int ipt = 0;
+		while ( (*sPt)[i] > ptBin_[ipt+1] ) ipt++;
+		for ( int j = 0; j < sz; j++ ) {
+			if ( RFP[j] != 1 ) continue;
+			if ( (*sRef)[2*i] == (*hRef)[j] or (*sRef)[2*i+1] == (*hRef)[j] ) continue;
+			if ( fabs( hEta[i] - hEta[j] ) < dEtaGap_ ) continue;
+
+			for ( int n = 2; n < 7; n++ ) {
+				rV0QGap[n][ipt] += cos( n*( (*sPhi)[i] - (*hPhi)[j] ) ) * (*sWeight)[i] * (*hWeight)[j];
+				wV0QGap[n][ipt] += (*sWeight)[i] * (*hWeight)[j];
+			}
 		}
 	}
 

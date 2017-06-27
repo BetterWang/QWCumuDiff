@@ -60,7 +60,7 @@ class QWCumuDiff : public edm::EDAnalyzer {
 		edm::InputTag					trackWeight_;
 		edm::InputTag					vertexZ_;
 
-//		edm::InputTag					sigEta_;
+		edm::InputTag					sigEta_;
 		edm::InputTag					sigPhi_;
 		edm::InputTag					sigPt_;
 		edm::InputTag					sigRef_;
@@ -77,6 +77,7 @@ class QWCumuDiff : public edm::EDAnalyzer {
 //		double	poimineta_, poimaxeta_;
 		double	rfpminpt_, rfpmaxpt_;
 //		double	poiminpt_, poimaxpt_;
+		double	dEtaGap_;
 
 		int	cmode_;
 	/////////////////////////////////////////////
@@ -89,6 +90,14 @@ class QWCumuDiff : public edm::EDAnalyzer {
 		double rQ[7][4];
 		double iQ[7][4];
 		double wQ[7][4];
+
+		double rQGap[7];
+		double iQGap[7];
+		double wQGap[7];
+
+		double rV0QGap[7][24];
+		double iV0QGap[7][24];
+		double wV0QGap[7][24];
 
 		double rVQp[7][4][24];
 		double iVQp[7][4][24];
