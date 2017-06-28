@@ -119,25 +119,25 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 	for ( int np = 0; np < 4; np++ ) {
 		for ( int n = 2; n < 7; n++ ) {
 			trV->Branch(Form("rQ%i%i", n, 2+2*np), &rQ[n][np], Form("rQ%i%i/D", n, 2+2*np));
-//			trV->Branch(Form("iQ%i%i", n, 2+2*np), &iQ[n][np], Form("iQ%i%i/D", n, 2+2*np));
 
 			trV->Branch(Form("rVQp%i%i", n, 2+2*np), &rVQp[n][np], Form("rVQp%i%i[24]/D", n, 2+2*np));
-//			trV->Branch(Form("iVQp%i%i", n, 2+2*np), &iVQp[n][np], Form("iVQp%i%i[24]/D", n, 2+2*np));
 		}
 
 		int n = 2;
 		trV->Branch(Form("wQ%i%i", n, 2+2*np), &wQ[n][np], Form("wQ%i%i/D", n, 2+2*np));
 		trV->Branch(Form("wVQp%i%i", n, 2+2*np), wVQp[n][np], Form("wVQp%i%i[24]/D", n, 2+2*np));
 	}
+
 	int n = 2;
 	trV->Branch(Form("wQGap%i", n), &wQGap[n], Form("wQGap%i/D", n));
 	trV->Branch(Form("wV0QGap%i", n), wV0QGap[n], Form("wV0QGap%i[24]/D", n));
+	trV->Branch(Form("wQpGap%i", n), &wQpGap[n], Form("wQpGap%i[24]/D", n));
+
 	for ( int n = 2; n < 7; n++ ) {
 		trV->Branch(Form("rQGap%i", n), &rQGap[n], Form("rQGap%i/D", n));
-//		trV->Branch(Form("iQGap%i", n), &iQGap[n], Form("iQGap%i/D", n));
 
 		trV->Branch(Form("rV0QGap%i", n), rV0QGap[n], Form("rV0QGap%i[24]/D", n));
-//		trV->Branch(Form("iV0QGap%i", n), iV0QGap[n], Form("iV0QGap%i[24]/D", n));
+		trV->Branch(Form("rQpGap%i", n), rQpGap[n], Form("rQpGap%i[24]/D", n));
 	}
 
 	cout << " cmode_ = " << cmode_ << endl;
@@ -226,13 +226,14 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 
 		rQGap[n] = 0;
-		iQGap[n] = 0;
 		wQGap[n] = 0;
 
 		for ( int i = 0; i < 24; i++ ) {
 			rV0QGap[n][i] = 0;
-			iV0QGap[n][i] = 0;
 			wV0QGap[n][i] = 0;
+
+			rQpGap[n][i] = 0;
+			wQpGap[n][i] = 0;
 		}
 	}
 
@@ -272,13 +273,26 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 	}
 
+	for ( int i = 0; i < sz; i++ ) {
+		int ipt = 0;
+		while ( (*hPt)[i] > ptBin_[ipt+1] ) ipt++;
+		for ( int j = i+1; j < sz; j++ ) {
+			if ( RFP[j] != 1 ) continue;
+			if ( fabs( (*hEta)[i] - (*hEta)[j] ) < dEtaGap_ ) continue;
+			for ( int n = 2; n < 7; n++ ) {
+				rQpGap[n][ipt] += cos( n*( (*hPhi)[i] - (*hPhi)[j] ) ) * (*hWeight)[i] * (*hWeight)[j];
+				wQpGap[n][ipt] += (*hWeight)[i] * (*hWeight)[j];
+			}
+		}
+	}
+
 	for ( int i = 0; i < sigsz; i++ ) {
 		int ipt = 0;
 		while ( (*sPt)[i] > ptBin_[ipt+1] ) ipt++;
 		for ( int j = 0; j < sz; j++ ) {
 			if ( RFP[j] != 1 ) continue;
 			if ( (*sRef)[2*i] == (*hRef)[j] or (*sRef)[2*i+1] == (*hRef)[j] ) continue;
-			if ( fabs( (*hEta)[i] - (*hEta)[j] ) < dEtaGap_ ) continue;
+			if ( fabs( (*sEta)[i] - (*hEta)[j] ) < dEtaGap_ ) continue;
 
 			for ( int n = 2; n < 7; n++ ) {
 				rV0QGap[n][ipt] += cos( n*( (*sPhi)[i] - (*hPhi)[j] ) ) * (*sWeight)[i] * (*hWeight)[j];

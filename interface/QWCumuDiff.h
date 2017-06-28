@@ -95,8 +95,10 @@ class QWCumuDiff : public edm::EDAnalyzer {
 		double iQGap[7];
 		double wQGap[7];
 
+		double rQpGap[7][24];
+		double wQpGap[7][24];
+
 		double rV0QGap[7][24];
-		double iV0QGap[7][24];
 		double wV0QGap[7][24];
 
 		double rVQp[7][4][24];
