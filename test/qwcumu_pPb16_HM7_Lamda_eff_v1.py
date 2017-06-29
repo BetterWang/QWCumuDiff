@@ -273,9 +273,9 @@ process.RECO = cms.OutputModule("PoolOutputModule",
 
 process.out = cms.EndPath(process.RECO)
 process.schedule = cms.Schedule(
-	process.ana120,
-	process.ana150,
+#	process.ana120,
+#	process.ana150,
 #	process.ana185,
-#	process.ana250,
+	process.ana250,
 #	process.out
 )
