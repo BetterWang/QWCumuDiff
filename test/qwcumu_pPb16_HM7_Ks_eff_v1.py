@@ -159,6 +159,7 @@ process.QWV0EventKs = cms.EDProducer('QWV0VectProducer'
 
 process.load('pPb_HM_eff')
 process.QWEvent.fweight = cms.untracked.InputTag('Hijing_8TeV_dataBS.root')
+process.QWEvent.ptMan = cms.untracked.double(100)
 
 process.QWCumuDiff = cms.EDAnalyzer('QWCumuDiff',
 		trackSet = cms.untracked.PSet(

@@ -37,7 +37,8 @@ process.source = cms.Source("PoolSource",
 		'file:/eos/cms/store/hidata/PARun2016C/PAHighMultiplicity0/AOD/PromptReco-v1/000/285/480/00000/A417C575-08AF-E611-9BFC-FA163E05A16C.root',
 		'file:/eos/cms/store/hidata/PARun2016C/PAHighMultiplicity0/AOD/PromptReco-v1/000/285/480/00000/34DF5A88-08AF-E611-BC70-FA163E5AF33F.root',
 		'file:/eos/cms/store/hidata/PARun2016C/PAHighMultiplicity0/AOD/PromptReco-v1/000/285/480/00000/1E07EF6E-08AF-E611-A8B7-FA163EFF24E2.root',
-		)
+		),
+#	skipEvents=cms.untracked.uint32(573)
 )
 
 import HLTrigger.HLTfilters.hltHighLevel_cfi
@@ -157,9 +158,35 @@ process.QWV0EventKs = cms.EDProducer('QWV0VectProducer'
 		, ThetaXYZMax = cms.untracked.double(999999999999.)
 		)
 
+process.QWV0EventLambda = cms.EDProducer('QWV0VectProducer'
+		, vertexSrc = cms.untracked.InputTag('offlinePrimaryVertices', "")
+		, trackSrc = cms.untracked.InputTag('generalTracks')
+		, V0Src = cms.untracked.InputTag('generalV0CandidatesNew', 'Lambda')
+		, Massmin = cms.untracked.double(1.11)
+		, Massmax = cms.untracked.double(1.123)
+		, DecayXYZMin = cms.untracked.double(5.0)
+		, DecayXYZMax = cms.untracked.double(999999999999.)
+		, ThetaXYZMin = cms.untracked.double(0.999)
+		, ThetaXYZMax = cms.untracked.double(999999999999.)
+		)
+
+
+process.QWV0EventOmega = cms.EDProducer('QWV0VectProducer'
+		, vertexSrc = cms.untracked.InputTag('offlinePrimaryVertices', "")
+		, trackSrc = cms.untracked.InputTag('generalTracks')
+		, V0Src = cms.untracked.InputTag('generalCascadeCandidatesNew', 'Omega')
+		, Massmin = cms.untracked.double(1.65)
+		, Massmax = cms.untracked.double(1.7)
+		, DecayXYZMin = cms.untracked.double(5.0)
+		, DecayXYZMax = cms.untracked.double(999999999999.)
+		, ThetaXYZMin = cms.untracked.double(0.999)
+		, ThetaXYZMax = cms.untracked.double(999999999999.)
+		)
+
+process.QWV0EventV0 = process.QWV0EventOmega.clone()
+
 process.load('pPb_HM_eff')
 process.QWEvent.fweight = cms.untracked.InputTag('Hijing_8TeV_dataBS.root')
-process.QWEvent.ptMan = cms.untracked.double(100)
 
 process.QWCumuDiff = cms.EDAnalyzer('QWCumuDiff',
 		trackSet = cms.untracked.PSet(
@@ -170,45 +197,45 @@ process.QWCumuDiff = cms.EDAnalyzer('QWCumuDiff',
 			Weight = cms.untracked.InputTag('QWEvent', 'weight'),
 			),
 		sigSet = cms.untracked.PSet(
-			Eta = cms.untracked.InputTag('QWV0EventKs', 'eta'),
-			Phi = cms.untracked.InputTag('QWV0EventKs', 'phi'),
-			Ref = cms.untracked.InputTag('QWV0EventKs', 'Refs'),
-			Pt = cms.untracked.InputTag('QWV0EventKs', 'pt'),
-			Weight = cms.untracked.InputTag('QWV0EventKs', 'weight'),
+			Eta = cms.untracked.InputTag('QWV0EventV0', 'eta'),
+			Phi = cms.untracked.InputTag('QWV0EventV0', 'phi'),
+			Ref = cms.untracked.InputTag('QWV0EventV0', 'Refs'),
+			Pt = cms.untracked.InputTag('QWV0EventV0', 'pt'),
+			Weight = cms.untracked.InputTag('QWV0EventV0', 'weight'),
 			),
 		vertexZ = cms.untracked.InputTag('QWEvent', "vz"),
 		ptBin = cms.untracked.vdouble(0.1, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 12.0, 16.0, 20.0, 30.0, 40.0, 100.0),
 		centrality = cms.untracked.InputTag('Noff')
 		)
 
-process.vectV0MassKs120 = cms.EDAnalyzer('QWVectorAnalyzer',
-		src = cms.untracked.InputTag("QWV0EventKs", "mass"),
+process.vectV0Mass120 = cms.EDAnalyzer('QWVectorAnalyzer',
+		src = cms.untracked.InputTag("QWV0EventV0", "mass"),
 		hNbins = cms.untracked.int32(100),
 		hstart = cms.untracked.double(0),
 		hend = cms.untracked.double(100),
 		cNbins = cms.untracked.int32(100),
-		cstart = cms.untracked.double(.40),
-		cend = cms.untracked.double(0.60),
+		cstart = cms.untracked.double(1.6),
+		cend = cms.untracked.double(1.8),
 		)
 
-process.vectV0MassKs150 = process.vectV0MassKs120.clone()
-process.vectV0MassKs185 = process.vectV0MassKs120.clone()
-process.vectV0MassKs250 = process.vectV0MassKs120.clone()
+process.vectV0Mass150 = process.vectV0Mass120.clone()
+process.vectV0Mass185 = process.vectV0Mass120.clone()
+process.vectV0Mass250 = process.vectV0Mass120.clone()
 
-process.vectPhi120Ks = process.vectPhi.clone(src = cms.untracked.InputTag('QWV0EventKs', 'phi'))
-process.vectPhi150Ks = process.vectPhi.clone(src = cms.untracked.InputTag('QWV0EventKs', 'phi'))
-process.vectPhi185Ks = process.vectPhi.clone(src = cms.untracked.InputTag('QWV0EventKs', 'phi'))
-process.vectPhi250Ks = process.vectPhi.clone(src = cms.untracked.InputTag('QWV0EventKs', 'phi'))
+process.vectPhi120V0 = process.vectPhi.clone(src = cms.untracked.InputTag('QWV0EventV0', 'phi'))
+process.vectPhi150V0 = process.vectPhi.clone(src = cms.untracked.InputTag('QWV0EventV0', 'phi'))
+process.vectPhi185V0 = process.vectPhi.clone(src = cms.untracked.InputTag('QWV0EventV0', 'phi'))
+process.vectPhi250V0 = process.vectPhi.clone(src = cms.untracked.InputTag('QWV0EventV0', 'phi'))
 
-process.vectEta120Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWV0EventKs', 'eta'))
-process.vectEta150Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWV0EventKs', 'eta'))
-process.vectEta185Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWV0EventKs', 'eta'))
-process.vectEta250Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWV0EventKs', 'eta'))
+process.vectEta120V0 = process.vectEta.clone(src = cms.untracked.InputTag('QWV0EventV0', 'eta'))
+process.vectEta150V0 = process.vectEta.clone(src = cms.untracked.InputTag('QWV0EventV0', 'eta'))
+process.vectEta185V0 = process.vectEta.clone(src = cms.untracked.InputTag('QWV0EventV0', 'eta'))
+process.vectEta250V0 = process.vectEta.clone(src = cms.untracked.InputTag('QWV0EventV0', 'eta'))
 
-process.vectPt120Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
-process.vectPt150Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
-process.vectPt185Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
-process.vectPt250Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventKs', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
+process.vectPt120V0 = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventV0', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
+process.vectPt150V0 = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventV0', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
+process.vectPt185V0 = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventV0', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
+process.vectPt250V0 = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventV0', 'pt'), cNbins = cms.untracked.int32(4000), cend = cms.untracked.double(40))
 
 process.vectPhi120 = process.vectPhi.clone()
 process.vectPhi150 = process.vectPhi.clone()
@@ -240,15 +267,16 @@ process.vectPtW150 = process.vectPtW.clone()
 process.vectPtW185 = process.vectPtW.clone()
 process.vectPtW250 = process.vectPtW.clone()
 
-process.mon120 = cms.Sequence(process.histNoff + process.vectPhi120 + process.vectPhi120Ks + process.vectPt120 + process.vectPt120Ks + process.vectEta120 + process.vectEta120Ks + process.vectPhiW120 + process.vectPtW120 + process.vectEtaW120 + process.vectV0MassKs120)
-process.mon150 = cms.Sequence(process.histNoff + process.vectPhi150 + process.vectPhi150Ks + process.vectPt150 + process.vectPt150Ks + process.vectEta150 + process.vectEta150Ks + process.vectPhiW150 + process.vectPtW150 + process.vectEtaW150 + process.vectV0MassKs150)
-process.mon185 = cms.Sequence(process.histNoff + process.vectPhi185 + process.vectPhi185Ks + process.vectPt185 + process.vectPt185Ks + process.vectEta185 + process.vectEta185Ks + process.vectPhiW185 + process.vectPtW185 + process.vectEtaW185 + process.vectV0MassKs185)
-process.mon250 = cms.Sequence(process.histNoff + process.vectPhi250 + process.vectPhi250Ks + process.vectPt250 + process.vectPt250Ks + process.vectEta250 + process.vectEta250Ks + process.vectPhiW250 + process.vectPtW250 + process.vectEtaW250 + process.vectV0MassKs250)
+process.mon120 = cms.Sequence(process.histNoff + process.vectPhi120 + process.vectPhi120V0 + process.vectPt120 + process.vectPt120V0 + process.vectEta120 + process.vectEta120V0 + process.vectPhiW120 + process.vectPtW120 + process.vectEtaW120 + process.vectV0Mass120)
+process.mon150 = cms.Sequence(process.histNoff + process.vectPhi150 + process.vectPhi150V0 + process.vectPt150 + process.vectPt150V0 + process.vectEta150 + process.vectEta150V0 + process.vectPhiW150 + process.vectPtW150 + process.vectEtaW150 + process.vectV0Mass150)
+process.mon185 = cms.Sequence(process.histNoff + process.vectPhi185 + process.vectPhi185V0 + process.vectPt185 + process.vectPt185V0 + process.vectEta185 + process.vectEta185V0 + process.vectPhiW185 + process.vectPtW185 + process.vectEtaW185 + process.vectV0Mass185)
+process.mon250 = cms.Sequence(process.histNoff + process.vectPhi250 + process.vectPhi250V0 + process.vectPt250 + process.vectPt250V0 + process.vectEta250 + process.vectEta250V0 + process.vectPhiW250 + process.vectPtW250 + process.vectEtaW250 + process.vectV0Mass250)
 
-process.ana120 = cms.Path(process.hltHM120*process.eventSelection*process.Noff*process.ppNoffFilter120*process.QWEvent * process.QWV0EventKs * process.QWCumuDiff * process.mon120)
-process.ana150 = cms.Path(process.hltHM150*process.eventSelection*process.Noff*process.ppNoffFilter150*process.QWEvent * process.QWV0EventKs * process.QWCumuDiff * process.mon150)
-process.ana185 = cms.Path(process.hltHM185*process.eventSelection*process.Noff*process.ppNoffFilter185*process.QWEvent * process.QWV0EventKs * process.QWCumuDiff * process.mon185)
-process.ana250 = cms.Path(process.hltHM250*process.eventSelection*process.Noff*process.ppNoffFilter250*process.QWEvent * process.QWV0EventKs * process.QWCumuDiff * process.mon250)
+
+process.ana120 = cms.Path(process.hltHM120*process.eventSelection*process.Noff*process.ppNoffFilter120*process.QWEvent * process.QWV0EventV0 * process.QWCumuDiff * process.mon120)
+process.ana150 = cms.Path(process.hltHM150*process.eventSelection*process.Noff*process.ppNoffFilter150*process.QWEvent * process.QWV0EventV0 * process.QWCumuDiff * process.mon150)
+process.ana185 = cms.Path(process.hltHM185*process.eventSelection*process.Noff*process.ppNoffFilter185*process.QWEvent * process.QWV0EventV0 * process.QWCumuDiff * process.mon185)
+process.ana250 = cms.Path(process.hltHM250*process.eventSelection*process.Noff*process.ppNoffFilter250*process.QWEvent * process.QWV0EventV0 * process.QWCumuDiff * process.mon250)
 
 process.RECO = cms.OutputModule("PoolOutputModule",
 		outputCommands = cms.untracked.vstring('keep *'),
@@ -260,9 +288,9 @@ process.RECO = cms.OutputModule("PoolOutputModule",
 
 process.out = cms.EndPath(process.RECO)
 process.schedule = cms.Schedule(
-#	process.ana120,
-#	process.ana150,
-	process.ana185,
+	process.ana120,
+	process.ana150,
+#	process.ana185,
 #	process.ana250,
 #	process.out
 )
