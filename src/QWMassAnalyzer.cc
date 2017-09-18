@@ -37,9 +37,9 @@ QWMassAnalyzer::QWMassAnalyzer(const edm::ParameterSet& pset) :
 	srcPt_(pset.getUntrackedParameter<edm::InputTag>("srcPt")),
 	srcEta_(pset.getUntrackedParameter<edm::InputTag>("srcEta"))
 {
-	consumes<double>(srcMass_);
-	consumes<double>(srcPt_);
-	consumes<double>(srcEta_);
+	consumes< std::vector<double> >(srcMass_);
+	consumes< std::vector<double> >(srcPt_);
+	consumes< std::vector<double> >(srcEta_);
 
 	int Nbins = pset.getUntrackedParameter<int>("Nbins");
 	double start = pset.getUntrackedParameter<double>("start");
@@ -57,9 +57,9 @@ QWMassAnalyzer::QWMassAnalyzer(const edm::ParameterSet& pset) :
 		c.Etamax_ = pcut.getUntrackedParameter<double>("etaMax", 1.0);
 		cuts_.push_back(c);
 
-		TH1D * h = fs->make<TH1D>( Form("hMass_%i", idx), Form("pT %d-%d, eta %d-%d", c.pTmin_, c.pTmax_, c.Etamin_, c.Etamax_), Nbins, start, end );
+		TH1D * h = fs->make<TH1D>( Form("hMass_%i", idx), Form("pT (%f,%f), eta (%f,%f);mass;count", c.pTmin_, c.pTmax_, c.Etamin_, c.Etamax_), Nbins, start, end );
 		h->Sumw2();
-		vh->push_back( h );
+		vh_.push_back( h );
 		idx++;
 	}
 }
@@ -76,18 +76,18 @@ QWMassAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.getByLabel(srcPt_, vpt);
 	iEvent.getByLabel(srcEta_, veta);
 
-	int sz = vmass.size();
+	int sz = (*vmass).size();
 
 	for ( int i = 0; i < sz; i++ ) {
-		double mass = vmass[i];
-		double pt = vpt[i];
-		double eta = veta[i];
+		double mass = (*vmass)[i];
+		double pt = (*vpt)[i];
+		double eta = (*veta)[i];
 
 		int idx = 0;
 		for ( auto const cut : cuts_ ) {
 			if ( pt > cut.pTmin_ and pt < cut.pTmax_
 				and eta > cut.Etamin_ and eta < cut.Etamax_ ) {
-				vh[idx]->Fill(mass);
+				vh_[idx]->Fill(mass);
 			}
 			idx++;
 		}
