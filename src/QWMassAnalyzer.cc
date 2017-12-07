@@ -6,7 +6,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH1D.h"
-#include <iostream>
+#include "vector"
 
 class QWMassAnalyzer : public edm::EDAnalyzer {
 public:
@@ -19,60 +19,80 @@ private:
 
 	edm::InputTag   srcMass_;
 	edm::InputTag   srcPt_;
-	std::vector<double>	ptBin_;
-	std::vector<TH1D*> h;
-	std::vector<TH1D*> hc;
+	edm::InputTag   srcEta_;
+	std::vector<TH1D *> vh_;
+
+	typedef struct {
+		double pTmin_;
+		double pTmax_;
+		double Etamin_;
+		double Etamax_;
+	} cut;
+
+	std::vector< QWMassAnalyzer::cut > cuts_;
 };
 
 QWMassAnalyzer::QWMassAnalyzer(const edm::ParameterSet& pset) :
 	srcMass_(pset.getUntrackedParameter<edm::InputTag>("srcMass")),
-	srcPt_(pset.getUntrackedParameter<edm::InputTag>("srcPt"))
+	srcPt_(pset.getUntrackedParameter<edm::InputTag>("srcPt")),
+	srcEta_(pset.getUntrackedParameter<edm::InputTag>("srcEta"))
 {
-	consumes<std::vector<double> >(srcMass_);
-	consumes<std::vector<double> >(srcPt_);
+	consumes< std::vector<double> >(srcMass_);
+	consumes< std::vector<double> >(srcPt_);
+	consumes< std::vector<double> >(srcEta_);
 
-	ptBin_ = pset.getUntrackedParameter<std::vector<double> >("ptBin");
-
-	int hNbins = pset.getUntrackedParameter<int>("hNbins");
-	double hstart = pset.getUntrackedParameter<double>("hstart");
-	double hend = pset.getUntrackedParameter<double>("hend");
-
-	int cNbins = pset.getUntrackedParameter<int>("cNbins");
-	double cstart = pset.getUntrackedParameter<double>("cstart");
-	double cend = pset.getUntrackedParameter<double>("cend");
+	int Nbins = pset.getUntrackedParameter<int>("Nbins");
+	double start = pset.getUntrackedParameter<double>("start");
+	double end = pset.getUntrackedParameter<double>("end");
 
 	edm::Service<TFileService> fs;
-	for ( int i = 0; i < ptBin_.size() - 1; i++ ) {
-		h.push_back(fs->make<TH1D>(Form("h%i", i), Form("%f-%f", ptBin_[i], ptBin_[i+1], hNbins, hstart, hend));
-		h[i]->Sumw2();
-		hc.push_back(fs->make<TH1D>(Form("hc%i", i), Form("%f-%f", ptBin_[i], ptBin_[i+1], cNbins, cstart, cend));
-		hc[i]->Sumw2();
+
+	auto pcuts = pset.getUntrackedParameter< std::vector< edm::ParameterSet > >("cuts");
+	int idx = 0;
+	for ( auto pcut : pcuts ) {
+		QWMassAnalyzer::cut c;
+		c.pTmin_ = pcut.getUntrackedParameter<double>("ptMin", 0.);
+		c.pTmax_ = pcut.getUntrackedParameter<double>("ptMax", 100.);
+		c.Etamin_ = pcut.getUntrackedParameter<double>("etaMin", -1.0);
+		c.Etamax_ = pcut.getUntrackedParameter<double>("etaMax", 1.0);
+		cuts_.push_back(c);
+
+		TH1D * h = fs->make<TH1D>( Form("hMass_%i", idx), Form("pT (%f,%f), eta (%f,%f);mass;count", c.pTmin_, c.pTmax_, c.Etamin_, c.Etamax_), Nbins, start, end );
+		h->Sumw2();
+		vh_.push_back( h );
+		idx++;
 	}
-	h = fs->make<TH1D>("h", "h", hNbins, hstart, hend);
-	h->Sumw2();
-	hc = fs->make<TH1D>("hc", "hc", cNbins, cstart, cend);
-	hc->Sumw2();
 }
 
 void
 QWMassAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-	Handle<std::vector<double> > mass;
-	Handle<std::vector<double> > pt;
+	Handle< std::vector<double> > vmass;
+	Handle< std::vector<double> > veta;
+	Handle< std::vector<double> > vpt;
 
-	iEvent.getByLabel(srcMass_, mass);
-	iEvent.getByLabel(srcPt_, pt);
+	iEvent.getByLabel(srcMass_, vmass);
+	iEvent.getByLabel(srcPt_, vpt);
+	iEvent.getByLabel(srcEta_, veta);
 
-	int cnt = 0;
-	int sz = mass->size();
+	int sz = (*vmass).size();
+
 	for ( int i = 0; i < sz; i++ ) {
-		if ( (*pt)[i] > ptMin_ and (*pt)[i] < ptMax_ ) {
-			cnt++;
-			hc->Fill((*mass)[i]);
+		double mass = (*vmass)[i];
+		double pt = (*vpt)[i];
+		double eta = (*veta)[i];
+
+		int idx = 0;
+		for ( auto const cut : cuts_ ) {
+			if ( pt > cut.pTmin_ and pt < cut.pTmax_
+				and eta > cut.Etamin_ and eta < cut.Etamax_ ) {
+				vh_[idx]->Fill(mass);
+			}
+			idx++;
 		}
 	}
-	h->Fill(cnt);
+
 	return;
 }
 
