@@ -149,17 +149,38 @@ process.QWV0EventKs = cms.EDProducer('QWV0VectProducer'
 		, vertexSrc = cms.untracked.InputTag('offlinePrimaryVertices', "")
 		, trackSrc = cms.untracked.InputTag('generalTracks')
 		, V0Src = cms.untracked.InputTag('generalV0CandidatesNew', 'Kshort')
-		, Massmin = cms.untracked.double(0.467)
-		, Massmax = cms.untracked.double(0.523)
-		, DecayXYZMin = cms.untracked.double(5.0)
-		, DecayXYZMax = cms.untracked.double(999999999999.)
-		, ThetaXYZMin = cms.untracked.double(0.999)
-		, ThetaXYZMax = cms.untracked.double(999999999999.)
+		, cuts = cms.untracked.VPSet(
+			cms.untracked.PSet(
+				Massmin = cms.untracked.double(0.467)
+				, Massmax = cms.untracked.double(0.523)
+				, DecayXYZMin = cms.untracked.double(5.0)
+				, DecayXYZMax = cms.untracked.double(999999999999.)
+				, ThetaXYZMin = cms.untracked.double(0.999)
+				, ThetaXYZMax = cms.untracked.double(999999999999.)
+				),
+			)
+		)
+
+
+process.QWV0EventKsAll = cms.EDProducer('QWV0VectProducer'
+		, vertexSrc = cms.untracked.InputTag('offlinePrimaryVertices', "")
+		, trackSrc = cms.untracked.InputTag('generalTracks')
+		, V0Src = cms.untracked.InputTag('generalV0CandidatesNew', 'Kshort')
+		, cuts = cms.untracked.VPSet(
+			cms.untracked.PSet(
+				Massmin = cms.untracked.double(0.0)
+				, Massmax = cms.untracked.double(1.0)
+				, DecayXYZMin = cms.untracked.double(5.0)
+				, DecayXYZMax = cms.untracked.double(999999999999.)
+				, ThetaXYZMin = cms.untracked.double(0.999)
+				, ThetaXYZMax = cms.untracked.double(999999999999.)
+				),
+			)
 		)
 
 process.load('pPb_HM_eff')
 process.QWEvent.fweight = cms.untracked.InputTag('Hijing_8TeV_dataBS.root')
-process.QWEvent.ptMan = cms.untracked.double(100)
+process.QWEvent.ptMax = cms.untracked.double(100)
 
 process.QWCumuDiff = cms.EDAnalyzer('QWCumuDiff',
 		trackSet = cms.untracked.PSet(
@@ -240,15 +261,147 @@ process.vectPtW150 = process.vectPtW.clone()
 process.vectPtW185 = process.vectPtW.clone()
 process.vectPtW250 = process.vectPtW.clone()
 
-process.mon120 = cms.Sequence(process.histNoff + process.vectPhi120 + process.vectPhi120Ks + process.vectPt120 + process.vectPt120Ks + process.vectEta120 + process.vectEta120Ks + process.vectPhiW120 + process.vectPtW120 + process.vectEtaW120 + process.vectV0MassKs120)
-process.mon150 = cms.Sequence(process.histNoff + process.vectPhi150 + process.vectPhi150Ks + process.vectPt150 + process.vectPt150Ks + process.vectEta150 + process.vectEta150Ks + process.vectPhiW150 + process.vectPtW150 + process.vectEtaW150 + process.vectV0MassKs150)
-process.mon185 = cms.Sequence(process.histNoff + process.vectPhi185 + process.vectPhi185Ks + process.vectPt185 + process.vectPt185Ks + process.vectEta185 + process.vectEta185Ks + process.vectPhiW185 + process.vectPtW185 + process.vectEtaW185 + process.vectV0MassKs185)
-process.mon250 = cms.Sequence(process.histNoff + process.vectPhi250 + process.vectPhi250Ks + process.vectPt250 + process.vectPt250Ks + process.vectEta250 + process.vectEta250Ks + process.vectPhiW250 + process.vectPtW250 + process.vectEtaW250 + process.vectV0MassKs250)
 
-process.ana120 = cms.Path(process.hltHM120*process.eventSelection*process.Noff*process.ppNoffFilter120*process.QWEvent * process.QWV0EventKs * process.QWCumuDiff * process.mon120)
-process.ana150 = cms.Path(process.hltHM150*process.eventSelection*process.Noff*process.ppNoffFilter150*process.QWEvent * process.QWV0EventKs * process.QWCumuDiff * process.mon150)
-process.ana185 = cms.Path(process.hltHM185*process.eventSelection*process.Noff*process.ppNoffFilter185*process.QWEvent * process.QWV0EventKs * process.QWCumuDiff * process.mon185)
-process.ana250 = cms.Path(process.hltHM250*process.eventSelection*process.Noff*process.ppNoffFilter250*process.QWEvent * process.QWV0EventKs * process.QWCumuDiff * process.mon250)
+process.vectMass120 = cms.EDAnalyzer('QWMassAnalyzer',
+		srcMass = cms.untracked.InputTag('QWV0EventKsAll', 'mass'),
+		srcEta = cms.untracked.InputTag('QWV0EventKsAll', 'eta'),
+		srcPt = cms.untracked.InputTag('QWV0EventKsAll', 'pt'),
+		Nbins = cms.untracked.int32(100),
+		start = cms.untracked.double(0.4),
+		end   = cms.untracked.double(0.6),
+		cuts  = cms.untracked.VPSet(
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(0.1),
+				ptMax = cms.untracked.double(0.5),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(0.5),
+				ptMax = cms.untracked.double(1.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(1.0),
+				ptMax = cms.untracked.double(1.5),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(1.5),
+				ptMax = cms.untracked.double(2.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(2.0),
+				ptMax = cms.untracked.double(2.5),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(2.5),
+				ptMax = cms.untracked.double(3.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(3.0),
+				ptMax = cms.untracked.double(4.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(4.0),
+				ptMax = cms.untracked.double(5.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(5.0),
+				ptMax = cms.untracked.double(6.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(6.0),
+				ptMax = cms.untracked.double(8.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(8.0),
+				ptMax = cms.untracked.double(10.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(10.0),
+				ptMax = cms.untracked.double(12.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(12.0),
+				ptMax = cms.untracked.double(16.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(16.0),
+				ptMax = cms.untracked.double(20.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(20.0),
+				ptMax = cms.untracked.double(30.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+
+			cms.untracked.PSet(
+				ptMin = cms.untracked.double(30.0),
+				ptMax = cms.untracked.double(40.0),
+				etaMin = cms.untracked.double(-2.4),
+				etaMax = cms.untracked.double(2.4),
+				),
+			)
+	)
+
+
+process.vectMass150 = process.vectMass120.clone()
+process.vectMass185 = process.vectMass120.clone()
+process.vectMass250 = process.vectMass120.clone()
+
+
+process.mon120 = cms.Sequence(process.histNoff + process.vectPhi120 + process.vectPhi120Ks + process.vectPt120 + process.vectPt120Ks + process.vectEta120 + process.vectEta120Ks + process.vectPhiW120 + process.vectPtW120 + process.vectEtaW120 + process.vectMass120)
+process.mon150 = cms.Sequence(process.histNoff + process.vectPhi150 + process.vectPhi150Ks + process.vectPt150 + process.vectPt150Ks + process.vectEta150 + process.vectEta150Ks + process.vectPhiW150 + process.vectPtW150 + process.vectEtaW150 + process.vectMass150)
+process.mon185 = cms.Sequence(process.histNoff + process.vectPhi185 + process.vectPhi185Ks + process.vectPt185 + process.vectPt185Ks + process.vectEta185 + process.vectEta185Ks + process.vectPhiW185 + process.vectPtW185 + process.vectEtaW185 + process.vectMass185)
+process.mon250 = cms.Sequence(process.histNoff + process.vectPhi250 + process.vectPhi250Ks + process.vectPt250 + process.vectPt250Ks + process.vectEta250 + process.vectEta250Ks + process.vectPhiW250 + process.vectPtW250 + process.vectEtaW250 + process.vectMass250)
+
+
+
+process.ana120 = cms.Path(process.hltHM120*process.eventSelection*process.Noff*process.ppNoffFilter120*process.QWEvent * process.QWV0EventKs * process.QWV0EventKsAll * process.QWCumuDiff * process.mon120 )
+process.ana150 = cms.Path(process.hltHM150*process.eventSelection*process.Noff*process.ppNoffFilter150*process.QWEvent * process.QWV0EventKs * process.QWV0EventKsAll * process.QWCumuDiff * process.mon150 )
+process.ana185 = cms.Path(process.hltHM185*process.eventSelection*process.Noff*process.ppNoffFilter185*process.QWEvent * process.QWV0EventKs * process.QWV0EventKsAll * process.QWCumuDiff * process.mon185 )
+process.ana250 = cms.Path(process.hltHM250*process.eventSelection*process.Noff*process.ppNoffFilter250*process.QWEvent * process.QWV0EventKs * process.QWV0EventKsAll * process.QWCumuDiff * process.mon250 )
 
 process.RECO = cms.OutputModule("PoolOutputModule",
 		outputCommands = cms.untracked.vstring('keep *'),

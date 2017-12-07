@@ -5,7 +5,7 @@ from httplib import HTTPException
 
 config = config()
 
-config.General.requestName = 'PAHM0_Kscumu_eff_v8'
+config.General.requestName = 'PAHM0_Kscumu_eff_v9'
 config.General.workArea = 'CrabArea'
 config.General.transferOutputs = True
 config.General.transferLogs = True
@@ -35,7 +35,7 @@ except ClientException as cle:
 ### 1
 config.Data.inputDataset = '/PAHighMultiplicity1/davidlw-RecoSkim2016_pPb_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
 
-config.General.requestName = 'PAHM1_Kscumu_eff_v8'
+config.General.requestName = 'PAHM1_Kscumu_eff_v9'
 config.JobType.psetName = 'qwcumu_pPb16_HM1_Ks_eff_v1.py'
 try:
         crabCommand('submit', config = config)
@@ -46,7 +46,7 @@ except ClientException as cle:
 
 ### 2
 config.Data.inputDataset = '/PAHighMultiplicity2/davidlw-RecoSkim2016_pPb_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
-config.General.requestName = 'PAHM2_Kscumu_eff_v8'
+config.General.requestName = 'PAHM2_Kscumu_eff_v9'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
@@ -56,7 +56,7 @@ except ClientException as cle:
 
 ### 3
 config.Data.inputDataset = '/PAHighMultiplicity3/davidlw-RecoSkim2016_pPb_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
-config.General.requestName = 'PAHM3_Kscumu_eff_v8'
+config.General.requestName = 'PAHM3_Kscumu_eff_v9'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
@@ -66,7 +66,7 @@ except ClientException as cle:
 
 ### 4
 config.Data.inputDataset = '/PAHighMultiplicity4/davidlw-RecoSkim2016_pPb_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
-config.General.requestName = 'PAHM4_Kscumu_eff_v8'
+config.General.requestName = 'PAHM4_Kscumu_eff_v9'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
@@ -78,7 +78,7 @@ except ClientException as cle:
 
 ### 5
 config.Data.inputDataset = '/PAHighMultiplicity5/davidlw-RecoSkim2016_pPb_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
-config.General.requestName = 'PAHM5_Kscumu_eff_v8'
+config.General.requestName = 'PAHM5_Kscumu_eff_v9'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
@@ -89,7 +89,7 @@ except ClientException as cle:
 
 ### 6
 config.Data.inputDataset = '/PAHighMultiplicity6/davidlw-RecoSkim2016_pPb_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
-config.General.requestName = 'PAHM6_Kscumu_eff_v8'
+config.General.requestName = 'PAHM6_Kscumu_eff_v9'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
@@ -101,7 +101,7 @@ except ClientException as cle:
 ### 7
 config.Data.inputDataset = '/PAHighMultiplicity7/davidlw-RecoSkim2016_pPb_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
 
-config.General.requestName = 'PAHM7_Kscumu_eff_v8'
+config.General.requestName = 'PAHM7_Kscumu_eff_v9'
 config.JobType.psetName = 'qwcumu_pPb16_HM7_Ks_eff_v1.py'
 try:
         crabCommand('submit', config = config)
