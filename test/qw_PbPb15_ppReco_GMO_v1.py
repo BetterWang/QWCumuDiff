@@ -108,7 +108,7 @@ process.QWV0EventKs = cms.EDProducer('QWV0VectProducer'
 process.QWV0EventLambda = cms.EDProducer('QWV0VectProducer'
         , vertexSrc = cms.untracked.InputTag('GMOVertex')
         , trackSrc = cms.untracked.InputTag('generalTracks')
-        , V0Src = cms.untracked.InputTag('generalV0CandidatesNew', 'Kshort')
+        , V0Src = cms.untracked.InputTag('generalV0CandidatesNew', 'Lambda')
         , daughter_cuts = cms.untracked.PSet(
             )
         , cuts = cms.untracked.VPSet(
@@ -116,7 +116,7 @@ process.QWV0EventLambda = cms.EDProducer('QWV0VectProducer'
                 Massmin = cms.untracked.double(1.08)
                 , Massmax = cms.untracked.double(1.16)
                 , DecayXYZMin = cms.untracked.double(5.0)
-                , ThetaXYZMin = cms.untracked.double(0.9999)
+                , ThetaXYZMin = cms.untracked.double(0.9998)
                 , ptMin = cms.untracked.double(0.2)
                 , ptMax = cms.untracked.double(1.0)
                 ),
@@ -124,7 +124,7 @@ process.QWV0EventLambda = cms.EDProducer('QWV0VectProducer'
                 Massmin = cms.untracked.double(1.08)
                 , Massmax = cms.untracked.double(1.16)
                 , DecayXYZMin = cms.untracked.double(5.0)
-                , ThetaXYZMin = cms.untracked.double(0.9998)
+                , ThetaXYZMin = cms.untracked.double(0.9999)
                 , ptMin = cms.untracked.double(1.0)
                 , ptMax = cms.untracked.double(8.5)
                 )
@@ -141,7 +141,7 @@ process.QWEvent.ptMax = cms.untracked.double(100)
 process.vectKsMassN0 = cms.EDAnalyzer('QWMassAnalyzer',
         srcMass = cms.untracked.InputTag("QWV0EventKs", "mass"),
         srcPt = cms.untracked.InputTag("QWV0EventKs", "pt"),
-        srcPt = cms.untracked.InputTag("QWV0EventKs", "eta"),
+        srcEta = cms.untracked.InputTag("QWV0EventKs", "eta"),
         hNbins = cms.untracked.int32(10),
         hstart = cms.untracked.double(0),
         hend = cms.untracked.double(10),
@@ -153,17 +153,14 @@ process.vectKsMassN0 = cms.EDAnalyzer('QWMassAnalyzer',
                 ptMin = cms.untracked.double(0.2),
                 ptMax = cms.untracked.double(0.4),
                 ),
-            ),
             cms.untracked.PSet(
                 ptMin = cms.untracked.double(0.4),
                 ptMax = cms.untracked.double(0.6),
                 ),
-            ),
             cms.untracked.PSet(
                 ptMin = cms.untracked.double(0.6),
                 ptMax = cms.untracked.double(0.8),
                 ),
-            ),
             cms.untracked.PSet(
                 ptMin = cms.untracked.double(0.8),
                 ptMax = cms.untracked.double(1.0),
@@ -219,7 +216,7 @@ process.vectKsMassN250      = process.vectKsMassN0.clone()
 process.vectLmMassN0 = process.vectKsMassN0.clone(
         srcMass = cms.untracked.InputTag("QWV0EventLambda", "mass"),
         srcPt = cms.untracked.InputTag("QWV0EventLambda", "pt"),
-        srcPt = cms.untracked.InputTag("QWV0EventLambda", "eta"),
+        srcEta = cms.untracked.InputTag("QWV0EventLambda", "eta"),
         )
 
 
@@ -328,5 +325,5 @@ process.schedule = cms.Schedule(
         process.ana120,
         process.ana185,
         process.ana250,
-#        process.out
+        process.out
         )
