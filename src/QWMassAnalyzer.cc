@@ -20,7 +20,10 @@ private:
 	edm::InputTag   srcMass_;
 	edm::InputTag   srcPt_;
 	edm::InputTag   srcEta_;
-	std::vector<TH1D *> vh_;
+	edm::InputTag   srcPhi_;
+	std::vector<TH1D *> vhmass_;
+	std::vector<TH1D *> vhphi_;
+	std::vector<TH1D *> vheta_;
 	TH1D *	hN;
 
 	typedef struct {
@@ -36,11 +39,13 @@ private:
 QWMassAnalyzer::QWMassAnalyzer(const edm::ParameterSet& pset) :
 	srcMass_(pset.getUntrackedParameter<edm::InputTag>("srcMass")),
 	srcPt_(pset.getUntrackedParameter<edm::InputTag>("srcPt")),
-	srcEta_(pset.getUntrackedParameter<edm::InputTag>("srcEta"))
+	srcEta_(pset.getUntrackedParameter<edm::InputTag>("srcEta")),
+	srcPhi_(pset.getUntrackedParameter<edm::InputTag>("srcPhi"))
 {
 	consumes< std::vector<double> >(srcMass_);
 	consumes< std::vector<double> >(srcPt_);
 	consumes< std::vector<double> >(srcEta_);
+	consumes< std::vector<double> >(srcPhi_);
 
 	int Nbins = pset.getUntrackedParameter<int>("Nbins");
 	double start = pset.getUntrackedParameter<double>("start");
@@ -59,8 +64,11 @@ QWMassAnalyzer::QWMassAnalyzer(const edm::ParameterSet& pset) :
 		cuts_.push_back(c);
 
 		TH1D * h = fs->make<TH1D>( Form("hMass_%i", idx), Form("pT (%f,%f), eta (%f,%f);mass;count", c.pTmin_, c.pTmax_, c.Etamin_, c.Etamax_), Nbins, start, end );
-		h->Sumw2();
-		vh_.push_back( h );
+		vhmass_.push_back( h );
+		h = fs->make<TH1D>( Form("hPhi_%i", idx), Form("pT (%f,%f), eta (%f,%f);mass;count", c.pTmin_, c.pTmax_, c.Etamin_, c.Etamax_), 100, -3.14159265358979323846, 3.14159265358979323846);
+		vhphi_.push_back( h );
+		h = fs->make<TH1D>( Form("hEta_%i", idx), Form("pT (%f,%f), eta (%f,%f);mass;count", c.pTmin_, c.pTmax_, c.Etamin_, c.Etamax_), 100, -2.5, 2.5);
+		vheta_.push_back( h );
 		idx++;
 	}
 	hN = fs->make<TH1D>("hN", "hN", 20, 0, 20);
@@ -72,11 +80,13 @@ QWMassAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace edm;
 	Handle< std::vector<double> > vmass;
 	Handle< std::vector<double> > veta;
+	Handle< std::vector<double> > vphi;
 	Handle< std::vector<double> > vpt;
 
 	iEvent.getByLabel(srcMass_, vmass);
 	iEvent.getByLabel(srcPt_, vpt);
 	iEvent.getByLabel(srcEta_, veta);
+	iEvent.getByLabel(srcPhi_, vphi);
 
 	int sz = (*vmass).size();
 
@@ -85,12 +95,15 @@ QWMassAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		double mass = (*vmass)[i];
 		double pt = (*vpt)[i];
 		double eta = (*veta)[i];
+		double phi = (*vphi)[i];
 
 		int idx = 0;
 		for ( auto const cut : cuts_ ) {
 			if ( pt > cut.pTmin_ and pt < cut.pTmax_
 				and eta > cut.Etamin_ and eta < cut.Etamax_ ) {
-				vh_[idx]->Fill(mass);
+				vhmass_[idx]->Fill(mass);
+				vheta_[idx]->Fill(eta);
+				vhphi_[idx]->Fill(phi);
 			}
 			idx++;
 		}
