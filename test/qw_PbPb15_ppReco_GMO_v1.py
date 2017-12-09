@@ -217,6 +217,8 @@ process.vectLmMassN0 = process.vectKsMassN0.clone(
         srcMass = cms.untracked.InputTag("QWV0EventLambda", "mass"),
         srcPt = cms.untracked.InputTag("QWV0EventLambda", "pt"),
         srcEta = cms.untracked.InputTag("QWV0EventLambda", "eta"),
+        start = cms.untracked.double(1.08),
+        end = cms.untracked.double(1.18),
         )
 
 
@@ -226,11 +228,6 @@ process.vectLmMassN90      = process.vectLmMassN0.clone()
 process.vectLmMassN120     = process.vectLmMassN0.clone()
 process.vectLmMassN185     = process.vectLmMassN0.clone()
 process.vectLmMassN250     = process.vectLmMassN0.clone()
-
-process.vectPhiV0 = process.vectPhi.clone(src = cms.untracked.InputTag('QWV0EventV0', 'phi'))
-process.vectEtaV0 = process.vectEta.clone(src = cms.untracked.InputTag('QWV0EventV0', 'eta'))
-process.vectPtV0  = process.vectPt.clone(src = cms.untracked.InputTag('QWV0EventV0', 'pt'))
-
 
 process.ana0 = cms.Path(
         process.eventSelection
