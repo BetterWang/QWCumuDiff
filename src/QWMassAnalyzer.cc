@@ -21,6 +21,7 @@ private:
 	edm::InputTag   srcPt_;
 	edm::InputTag   srcEta_;
 	std::vector<TH1D *> vh_;
+	TH1D *	hN;
 
 	typedef struct {
 		double pTmin_;
@@ -53,8 +54,8 @@ QWMassAnalyzer::QWMassAnalyzer(const edm::ParameterSet& pset) :
 		QWMassAnalyzer::cut c;
 		c.pTmin_ = pcut.getUntrackedParameter<double>("ptMin", 0.);
 		c.pTmax_ = pcut.getUntrackedParameter<double>("ptMax", 100.);
-		c.Etamin_ = pcut.getUntrackedParameter<double>("etaMin", -1.0);
-		c.Etamax_ = pcut.getUntrackedParameter<double>("etaMax", 1.0);
+		c.Etamin_ = pcut.getUntrackedParameter<double>("etaMin", -2.4);
+		c.Etamax_ = pcut.getUntrackedParameter<double>("etaMax", 2.4);
 		cuts_.push_back(c);
 
 		TH1D * h = fs->make<TH1D>( Form("hMass_%i", idx), Form("pT (%f,%f), eta (%f,%f);mass;count", c.pTmin_, c.pTmax_, c.Etamin_, c.Etamax_), Nbins, start, end );
@@ -62,6 +63,7 @@ QWMassAnalyzer::QWMassAnalyzer(const edm::ParameterSet& pset) :
 		vh_.push_back( h );
 		idx++;
 	}
+	hN = fs->make<TH1D>("hN", "hN", 20, 0, 20);
 }
 
 void
@@ -78,6 +80,7 @@ QWMassAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	int sz = (*vmass).size();
 
+	hN->Fill(sz);
 	for ( int i = 0; i < sz; i++ ) {
 		double mass = (*vmass)[i];
 		double pt = (*vpt)[i];
