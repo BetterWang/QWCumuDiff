@@ -233,7 +233,7 @@ process.vectLmMassN250     = process.vectLmMassN0.clone()
 
 process.ana0 = cms.Path(
         process.eventSelection
-        * process.makeEvent
+        * process.Noff
         * process.NoffFilter0
         * process.QWV0EventKs
         * process.QWV0EventLambda
@@ -243,7 +243,7 @@ process.ana0 = cms.Path(
 
 process.ana10 = cms.Path(
         process.eventSelection
-        * process.makeEvent
+        * process.Noff
         * process.NoffFilter10
         * process.QWV0EventKs
         * process.QWV0EventLambda
@@ -253,7 +253,7 @@ process.ana10 = cms.Path(
 
 process.ana30 = cms.Path(
         process.eventSelection
-        * process.makeEvent
+        * process.Noff
         * process.NoffFilter30
         * process.QWV0EventKs
         * process.QWV0EventLambda
@@ -263,7 +263,7 @@ process.ana30 = cms.Path(
 
 process.ana90 = cms.Path(
         process.eventSelection
-        * process.makeEvent
+        * process.Noff
         * process.NoffFilter0
         * process.QWV0EventKs
         * process.QWV0EventLambda
@@ -273,7 +273,7 @@ process.ana90 = cms.Path(
 
 process.ana120 = cms.Path(
         process.eventSelection
-        * process.makeEvent
+        * process.Noff
         * process.NoffFilter120
         * process.QWV0EventKs
         * process.QWV0EventLambda
@@ -283,7 +283,7 @@ process.ana120 = cms.Path(
 
 process.ana185 = cms.Path(
         process.eventSelection
-        * process.makeEvent
+        * process.Noff
         * process.NoffFilter185
         * process.QWV0EventKs
         * process.QWV0EventLambda
@@ -294,7 +294,7 @@ process.ana185 = cms.Path(
 
 process.ana250 = cms.Path(
         process.eventSelection
-        * process.makeEvent
+        * process.Noff
         * process.NoffFilter250
         * process.QWV0EventKs
         * process.QWV0EventLambda
@@ -324,5 +324,5 @@ process.schedule = cms.Schedule(
         process.ana120,
         process.ana185,
         process.ana250,
-        process.out
+#        process.out
         )
