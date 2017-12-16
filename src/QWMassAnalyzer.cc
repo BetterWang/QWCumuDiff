@@ -5,7 +5,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include "TH1D.h"
+#include "TH3D.h"
 #include "vector"
 
 class QWMassAnalyzer : public edm::EDAnalyzer {
@@ -25,6 +25,7 @@ private:
 	std::vector<TH1D *> vhphi_;
 	std::vector<TH1D *> vheta_;
 	TH1D *	hN;
+	TH3D *	h3D;
 
 	typedef struct {
 		double pTmin_;
@@ -71,7 +72,26 @@ QWMassAnalyzer::QWMassAnalyzer(const edm::ParameterSet& pset) :
 		vheta_.push_back( h );
 		idx++;
 	}
+
 	hN = fs->make<TH1D>("hN", "hN", 20, 0, 20);
+
+	std::vector<double> veta = pset.getUntrackedParameter<std::vector<double>>("EtaBins", std::vector<double>{-2.5, -2.4, -2.3, -2.2, -2.1, -2.0,
+			-1.9, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1.0,
+			-0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0.0,
+			0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
+			1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0,
+			2.1, 2.2, 2.3, 2.4, 2.5});
+	std::vector<double> vpT  = pset.getUntrackedParameter<std::vector<double>>("PtBins", std::vector<double>{0.2, 0.4, 0.6, 0.8, 1.0, 1.4, 1.8, 2.2, 2.8, 3.6, 4.6,6.0, 7.0, 8.5});
+
+	std::vector<double> vMass;
+	{
+		double dmass = (end - start)/Nbins;
+		for ( int i = 0; i < Nbins; i++ ) {
+			vMass.push_back(start + dmass*i);
+		}
+	}
+	vMass.push_back(end);
+	h3D = fs->make<TH3D>("h3D", "h3D;Mass;pT;eta", Nbins, vMass.data(), vpT.size()-1, vpT.data(), veta.size()-1, veta.data());
 }
 
 void
@@ -96,6 +116,8 @@ QWMassAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		double pt = (*vpt)[i];
 		double eta = (*veta)[i];
 		double phi = (*vphi)[i];
+
+		h3D->Fill(mass, pt, eta);
 
 		int idx = 0;
 		for ( auto const cut : cuts_ ) {

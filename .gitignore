@@ -20,3 +20,4 @@ runConfig2/*
 !runConfig2/run*.sh
 *.pyc
 tmp/
+CumuV0
