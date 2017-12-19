@@ -7,6 +7,7 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TH3D.h"
 #include "vector"
+#include "iostream"
 
 class QWMassAnalyzer : public edm::EDAnalyzer {
 public:
@@ -21,27 +22,20 @@ private:
 	edm::InputTag   srcPt_;
 	edm::InputTag   srcEta_;
 	edm::InputTag   srcPhi_;
-	std::vector<TH1D *> vhmass_;
-	std::vector<TH1D *> vhphi_;
-	std::vector<TH1D *> vheta_;
+	std::vector<double> pTbins_;
+
 	TH1D *	hN;
 	TH3D *	h3D;
+	std::vector<TH3D *> h3DPhi;
 
-	typedef struct {
-		double pTmin_;
-		double pTmax_;
-		double Etamin_;
-		double Etamax_;
-	} cut;
-
-	std::vector< QWMassAnalyzer::cut > cuts_;
 };
 
 QWMassAnalyzer::QWMassAnalyzer(const edm::ParameterSet& pset) :
 	srcMass_(pset.getUntrackedParameter<edm::InputTag>("srcMass")),
 	srcPt_(pset.getUntrackedParameter<edm::InputTag>("srcPt")),
 	srcEta_(pset.getUntrackedParameter<edm::InputTag>("srcEta")),
-	srcPhi_(pset.getUntrackedParameter<edm::InputTag>("srcPhi"))
+	srcPhi_(pset.getUntrackedParameter<edm::InputTag>("srcPhi")),
+	pTbins_(pset.getUntrackedParameter<std::vector<double>>("pTbins", std::vector<double>{0.2, 0.4, 0.6, 0.8, 1.0, 1.4, 1.8, 2.2, 2.8, 3.6, 4.6, 6.0, 7.0, 8.5}))
 {
 	consumes< std::vector<double> >(srcMass_);
 	consumes< std::vector<double> >(srcPt_);
@@ -53,25 +47,6 @@ QWMassAnalyzer::QWMassAnalyzer(const edm::ParameterSet& pset) :
 	double end = pset.getUntrackedParameter<double>("end");
 
 	edm::Service<TFileService> fs;
-
-	auto pcuts = pset.getUntrackedParameter< std::vector< edm::ParameterSet > >("cuts");
-	int idx = 0;
-	for ( auto pcut : pcuts ) {
-		QWMassAnalyzer::cut c;
-		c.pTmin_ = pcut.getUntrackedParameter<double>("ptMin", 0.);
-		c.pTmax_ = pcut.getUntrackedParameter<double>("ptMax", 100.);
-		c.Etamin_ = pcut.getUntrackedParameter<double>("etaMin", -2.4);
-		c.Etamax_ = pcut.getUntrackedParameter<double>("etaMax", 2.4);
-		cuts_.push_back(c);
-
-		TH1D * h = fs->make<TH1D>( Form("hMass_%i", idx), Form("pT (%f,%f), eta (%f,%f);mass;count", c.pTmin_, c.pTmax_, c.Etamin_, c.Etamax_), Nbins, start, end );
-		vhmass_.push_back( h );
-		h = fs->make<TH1D>( Form("hPhi_%i", idx), Form("pT (%f,%f), eta (%f,%f);mass;count", c.pTmin_, c.pTmax_, c.Etamin_, c.Etamax_), 100, -3.14159265358979323846, 3.14159265358979323846);
-		vhphi_.push_back( h );
-		h = fs->make<TH1D>( Form("hEta_%i", idx), Form("pT (%f,%f), eta (%f,%f);mass;count", c.pTmin_, c.pTmax_, c.Etamin_, c.Etamax_), 100, -2.5, 2.5);
-		vheta_.push_back( h );
-		idx++;
-	}
 
 	hN = fs->make<TH1D>("hN", "hN", 20, 0, 20);
 
@@ -92,6 +67,11 @@ QWMassAnalyzer::QWMassAnalyzer(const edm::ParameterSet& pset) :
 	}
 	vMass.push_back(end);
 	h3D = fs->make<TH3D>("h3D", "h3D;Mass;pT;eta", Nbins, vMass.data(), vpT.size()-1, vpT.data(), veta.size()-1, veta.data());
+
+	for ( unsigned int i = 0; i < pTbins_.size() - 1; i++ ) {
+		TH3D * h3 = fs->make<TH3D>(Form("h3DPhi_%i", i), Form("pT %f - %f;Mass;phi;eta",pTbins_[i], pTbins_[i+1]), Nbins, start, end, 72, -3.14159265358979323846, 3.14159265358979323846, 50, -2.5, 2.5);
+		h3DPhi.push_back(h3);
+	}
 }
 
 void
@@ -119,15 +99,10 @@ QWMassAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		h3D->Fill(mass, pt, eta);
 
-		int idx = 0;
-		for ( auto const cut : cuts_ ) {
-			if ( pt > cut.pTmin_ and pt < cut.pTmax_
-				and eta > cut.Etamin_ and eta < cut.Etamax_ ) {
-				vhmass_[idx]->Fill(mass);
-				vheta_[idx]->Fill(eta);
-				vhphi_[idx]->Fill(phi);
+		for ( unsigned int j = 0; j < pTbins_.size() - 1; j++ ) {
+			if ( pt > pTbins_[j] and pt < pTbins_[j+1] ) {
+				h3DPhi[j]->Fill(mass, phi, eta);
 			}
-			idx++;
 		}
 	}
 
