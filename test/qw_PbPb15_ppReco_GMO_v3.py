@@ -34,6 +34,19 @@ process.TFileService = cms.Service("TFileService",
         )
 
 
+process.QWVertex = cms.EDProducer('QWVertexProducer',
+		vertexSrc = cms.untracked.InputTag('offlinePrimaryVertices')
+	)
+process.QWPrimaryVz = cms.EDProducer('QWVectorSelector',
+		vectSrc = cms.untracked.InputTag('QWVertex', 'vz'),
+	)
+process.QWVzFilter15 = cms.EDFilter('QWDoubleFilter',
+		src = cms.untracked.InputTag('QWPrimaryVz'),
+		dmin = cms.untracked.double(-15.),
+		dmax = cms.untracked.double(15.),
+	)
+process.QWPrimaryVertexSelection = cms.Sequence( process.QWVertex * process.QWPrimaryVz * process.QWVzFilter15 )
+
 process.load('HeavyIonsAnalysis.Configuration.collisionEventSelection_cff')
 process.load('RecoHI.HiCentralityAlgos.CentralityFilter_cfi')
 
@@ -88,6 +101,7 @@ process.NoffFilter250 = process.centralityFilter.clone(
 
 process.eventSelection = cms.Sequence(
         process.hfCoincFilter3
+	+ process.QWPrimaryVertexSelection
         #        + process.primaryVertexFilter
         #        + process.clusterCompatibilityFilter
         )
@@ -102,7 +116,7 @@ process.QWV0EventKs = cms.EDProducer('QWV0VectProducer'
         , cuts = cms.untracked.VPSet(
             cms.untracked.PSet(
                 Massmin = cms.untracked.double(0.43)
-                , Massmax = cms.untracked.double(0.57)
+                , Massmax = cms.untracked.double(0.565)
                 , DecayXYZMin = cms.untracked.double(5.0)
                 , ThetaXYZMin = cms.untracked.double(0.999)
                 , ptMin = cms.untracked.double(0.2)
@@ -152,63 +166,9 @@ process.vectKsMassN0 = cms.EDAnalyzer('QWMassAnalyzer',
         hNbins = cms.untracked.int32(10),
         hstart = cms.untracked.double(0),
         hend = cms.untracked.double(10),
-        Nbins = cms.untracked.int32(100),
-        start = cms.untracked.double(.40),
-        end = cms.untracked.double(0.60),
-        cuts = cms.untracked.VPSet(
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(0.2),
-                ptMax = cms.untracked.double(0.4),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(0.4),
-                ptMax = cms.untracked.double(0.6),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(0.6),
-                ptMax = cms.untracked.double(0.8),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(0.8),
-                ptMax = cms.untracked.double(1.0),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(1.0),
-                ptMax = cms.untracked.double(1.4),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(1.4),
-                ptMax = cms.untracked.double(1.8),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(1.8),
-                ptMax = cms.untracked.double(2.2),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(2.2),
-                ptMax = cms.untracked.double(2.8),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(2.8),
-                ptMax = cms.untracked.double(3.6),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(3.6),
-                ptMax = cms.untracked.double(4.6),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(4.6),
-                ptMax = cms.untracked.double(6.0),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(6.0),
-                ptMax = cms.untracked.double(7.0),
-                ),
-            cms.untracked.PSet(
-                ptMin = cms.untracked.double(7.0),
-                ptMax = cms.untracked.double(8.5),
-                )
-            ),
+        Nbins = cms.untracked.int32(270),
+        start = cms.untracked.double(.43),
+        end = cms.untracked.double(0.565),
         )
 
 
@@ -226,8 +186,9 @@ process.vectLmMassN0 = process.vectKsMassN0.clone(
         srcPt = cms.untracked.InputTag("QWV0EventLambda", "pt"),
         srcEta = cms.untracked.InputTag("QWV0EventLambda", "eta"),
         srcPhi = cms.untracked.InputTag("QWV0EventLambda", "phi"),
+        Nbins = cms.untracked.int32(160),
         start = cms.untracked.double(1.08),
-        end = cms.untracked.double(1.18),
+        end = cms.untracked.double(1.16),
         )
 
 

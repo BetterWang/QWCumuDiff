@@ -102,7 +102,7 @@ process.QWV0EventKs = cms.EDProducer('QWV0VectProducer'
         , cuts = cms.untracked.VPSet(
             cms.untracked.PSet(
                 Massmin = cms.untracked.double(0.43)
-                , Massmax = cms.untracked.double(0.57)
+                , Massmax = cms.untracked.double(0.565)
                 , DecayXYZMin = cms.untracked.double(5.0)
                 , ThetaXYZMin = cms.untracked.double(0.999)
                 , ptMin = cms.untracked.double(0.2)
@@ -152,9 +152,9 @@ process.vectKsMassN0 = cms.EDAnalyzer('QWMassAnalyzer',
         hNbins = cms.untracked.int32(10),
         hstart = cms.untracked.double(0),
         hend = cms.untracked.double(10),
-        Nbins = cms.untracked.int32(100),
-        start = cms.untracked.double(.40),
-        end = cms.untracked.double(0.60),
+        Nbins = cms.untracked.int32(270),
+        start = cms.untracked.double(.43),
+        end = cms.untracked.double(0.565),
         cuts = cms.untracked.VPSet(
             cms.untracked.PSet(
                 ptMin = cms.untracked.double(0.2),
@@ -226,8 +226,9 @@ process.vectLmMassN0 = process.vectKsMassN0.clone(
         srcPt = cms.untracked.InputTag("QWV0EventLambda", "pt"),
         srcEta = cms.untracked.InputTag("QWV0EventLambda", "eta"),
         srcPhi = cms.untracked.InputTag("QWV0EventLambda", "phi"),
+        Nbins = cms.untracked.int32(160),
         start = cms.untracked.double(1.08),
-        end = cms.untracked.double(1.18),
+        end = cms.untracked.double(1.16),
         )
 
 
