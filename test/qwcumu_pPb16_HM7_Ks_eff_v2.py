@@ -181,7 +181,8 @@ process.QWV0EventKs = cms.EDProducer('QWV0VectProducer'
 
 process.load('pPb_HM_eff')
 process.QWEvent.fweight = cms.untracked.InputTag('NA')
-process.QWEvent.ptMax = cms.untracked.double(3.0)
+process.QWEvent.ptMin = cms.untracked.double(0.2)
+process.QWEvent.ptMax = cms.untracked.double(8.5)
 
 process.QWCumuDiff = cms.EDAnalyzer('QWCumuDiff',
 		trackSet = cms.untracked.PSet(

@@ -173,6 +173,8 @@ process.QWV0EventLambda = cms.EDProducer('QWV0VectProducer'
                 , ThetaXYZMin = cms.untracked.double(0.999)
                 , ptMin = cms.untracked.double(0.2)
                 , ptMax = cms.untracked.double(8.5)
+                , Rapmin = cms.untracked.double(-1.0)
+                , Rapmax = cms.untracked.double(1.0)
                 )
             )
         )
@@ -180,7 +182,8 @@ process.QWV0EventLambda = cms.EDProducer('QWV0VectProducer'
 
 process.load('pPb_HM_eff')
 process.QWEvent.fweight = cms.untracked.InputTag('NA')
-process.QWEvent.ptMax = cms.untracked.double(3.0)
+process.QWEvent.ptMin = cms.untracked.double(0.2)
+process.QWEvent.ptMax = cms.untracked.double(8.5)
 
 process.QWCumuDiff = cms.EDAnalyzer('QWCumuDiff',
 		trackSet = cms.untracked.PSet(
@@ -251,10 +254,10 @@ process.vectEtaW150 = process.vectEtaW.clone()
 process.vectEtaW185 = process.vectEtaW.clone()
 process.vectEtaW250 = process.vectEtaW.clone()
 
-process.vectPt120 = process.vectPt.clone()
-process.vectPt150 = process.vectPt.clone()
-process.vectPt185 = process.vectPt.clone()
-process.vectPt250 = process.vectPt.clone()
+process.vectPt120 = process.vectPt.clone(cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10.))
+process.vectPt150 = process.vectPt.clone(cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10.))
+process.vectPt185 = process.vectPt.clone(cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10.))
+process.vectPt250 = process.vectPt.clone(cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10.))
 
 process.vectPtW120 = process.vectPtW.clone()
 process.vectPtW150 = process.vectPtW.clone()

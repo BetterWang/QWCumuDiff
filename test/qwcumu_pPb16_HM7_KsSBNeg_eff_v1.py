@@ -167,8 +167,8 @@ process.QWV0EventKs = cms.EDProducer('QWV0VectProducer'
             )
         , cuts = cms.untracked.VPSet(
             cms.untracked.PSet(
-                Massmin = cms.untracked.double(0.492)
-                , Massmax = cms.untracked.double(0.503)
+                Massmin = cms.untracked.double(0.43)
+                , Massmax = cms.untracked.double(0.489)
                 , DecayXYZMin = cms.untracked.double(5.0)
                 , ThetaXYZMin = cms.untracked.double(0.999)
                 , ptMin = cms.untracked.double(0.2)
@@ -285,9 +285,9 @@ process.RECO = cms.OutputModule("PoolOutputModule",
 
 process.out = cms.EndPath(process.RECO)
 process.schedule = cms.Schedule(
-	process.ana120,
-	process.ana150,
+#	process.ana120,
+#	process.ana150,
 #	process.ana185,
-#	process.ana250,
+	process.ana250,
 #	process.out
 )
