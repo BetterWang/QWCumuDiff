@@ -7,3 +7,7 @@
 <use name="DataFormats/ParticleFlowCandidate"/>
 <use name="DataFormats/HepMCCandidate"/>
 <use name="CommonTools/UtilAlgos"/>
+<export>
+	  <lib   name="1"/>
+</export>
+<library   file="src/*.cc" name="QWCumuDiff"/>
