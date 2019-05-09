@@ -130,8 +130,24 @@ process.treeLm = cms.EDAnalyzer('QWTreeMaker',
 				name = cms.untracked.string('pTrkNHit')
 				),
 			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'pTrkPx'),
+				name = cms.untracked.string('pTrkPx')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'pTrkPy'),
+				name = cms.untracked.string('pTrkPy')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'pTrkPz'),
+				name = cms.untracked.string('pTrkPz')
+				),
+			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventLm', 'pTrkPt'),
 				name = cms.untracked.string('pTrkPt')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'pTrkPhi'),
+				name = cms.untracked.string('pTrkPhi')
 				),
 			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventLm', 'pTrkPtError'),
@@ -154,8 +170,24 @@ process.treeLm = cms.EDAnalyzer('QWTreeMaker',
 				name = cms.untracked.string('nTrkNHit')
 				),
 			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkPx'),
+				name = cms.untracked.string('nTrkPx')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkPy'),
+				name = cms.untracked.string('nTrkPy')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkPz'),
+				name = cms.untracked.string('nTrkPz')
+				),
+			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkPt'),
 				name = cms.untracked.string('nTrkPt')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkPhi'),
+				name = cms.untracked.string('nTrkPhi')
 				),
 			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkPtError'),
@@ -169,6 +201,38 @@ process.treeLm = cms.EDAnalyzer('QWTreeMaker',
 				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkNPxLayer'),
 				name = cms.untracked.string('nTrkNPxLayer')
 				),
+#			cms.PSet(
+#				tag = cms.untracked.InputTag('QWV0EventLm', 'pPhiCM'),
+#				name = cms.untracked.string('pPhiCM')
+#				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'pPxCM'),
+				name = cms.untracked.string('pPxCM')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'pPyCM'),
+				name = cms.untracked.string('pPyCM')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'pPzCM'),
+				name = cms.untracked.string('pPzCM')
+				),
+#			cms.PSet(
+#				tag = cms.untracked.InputTag('QWV0EventLm', 'nPhiCM'),
+#				name = cms.untracked.string('nPhiCM')
+#				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'nPxCM'),
+				name = cms.untracked.string('nPxCM')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'nPyCM'),
+				name = cms.untracked.string('nPyCM')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'nPzCM'),
+				name = cms.untracked.string('nPzCM')
+				),
 			),
 		Dtags = cms.untracked.VPSet(
 			cms.PSet(
@@ -176,13 +240,53 @@ process.treeLm = cms.EDAnalyzer('QWTreeMaker',
 				name = cms.untracked.string('Cent')
 				),
 			)
+
 		)
+
+process.HFQ2 = cms.EDProducer('QWCaloQProducer',
+        caloSrc = cms.untracked.InputTag('towerMaker'),
+        etaMin = cms.untracked.double(3.),
+        etaMax = cms.untracked.double(5.),
+        N = cms.untracked.int32(2)
+    )
+
+process.treeHF2 = cms.EDAnalyzer('QWTreeMaker',
+		Vtags = cms.untracked.VPSet(),
+		Dtags = cms.untracked.VPSet(
+#			cms.PSet(
+#				tag = cms.untracked.InputTag('HFQ2', 'abs'),
+#				name = cms.untracked.string('abs')
+#				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('HFQ2', 'absp'),
+				name = cms.untracked.string('absp')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('HFQ2', 'absm'),
+				name = cms.untracked.string('absm')
+				),
+#			cms.PSet(
+#				tag = cms.untracked.InputTag('HFQ2', 'arg'),
+#				name = cms.untracked.string('arg')
+#				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('HFQ2', 'argp'),
+				name = cms.untracked.string('argp')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('HFQ2', 'argm'),
+				name = cms.untracked.string('argm')
+				),
+			)
+    )
 
 
 process.ana0 = cms.Path(
         process.dbCent
         * process.QWV0EventLm
         * process.treeLm
+        * process.HFQ2
+        * process.treeHF2
         * process.histCentBin
         )
 

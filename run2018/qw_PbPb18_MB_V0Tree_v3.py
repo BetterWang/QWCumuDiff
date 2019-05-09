@@ -42,7 +42,7 @@ process.options = cms.untracked.PSet(
         )
 
 process.source = cms.Source("PoolSource",
-	fileNames = cms.untracked.vstring("file:/afs/cern.ch/user/q/qwang/work/cleanroomRun2/Ana/CMSSW_10_3_1_patch3/src/QWAna/QWV0Skim/reco.root"),
+        fileNames = cms.untracked.vstring("file:/afs/cern.ch/user/q/qwang/work/cleanroomRun2/Ana/data/PbPb2018_MB_V0Skim.root"),
         secondaryFileNames = cms.untracked.vstring(
 		'file:/afs/cern.ch/user/q/qwang/work/cleanroomRun2/Ana/data/PbPb2018_MB.root'
             ),

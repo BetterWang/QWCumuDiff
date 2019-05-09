@@ -5,12 +5,12 @@ from httplib import HTTPException
 
 config = config()
 
-config.General.requestName = 'Hydjet_RECODEBUG_LmTree_v2'
+config.General.requestName = 'Hydjet_RECODEBUG_GenLmTree_v1'
 config.General.workArea = 'CrabArea'
 config.General.transferOutputs = True
 config.General.transferLogs = False
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'qw_PbPb18_Hydjet_RECODEBUG_V0Tree_v1.py'
+config.JobType.psetName = 'qw_PbPb18_Hydjet_RECODEBUG_GenLmTree_v1.py'
 #config.JobType.maxJobRuntimeMin = 2500
 #config.JobType.inputFiles = ['Hydjet_PbPb_eff_v1.root', 'Hydjet_ppReco_v5_loose.root']
 config.Data.inputDataset = '/MinBias_Hydjet_Drum5F_2018_5p02TeV/qwang-crab_HydjetDrum5F_RECODEBUG_V0Skim_v1-4fb2a1ba2f6b043399c08fb9db565e25/USER'
