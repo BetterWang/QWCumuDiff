@@ -107,6 +107,8 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 	for ( int n = 1; n < 7; n++ ) {
 		q[n] = correlations::QVector(0, 0, true);
 	}
+	qpos = correlations::QVector(0, 0, true);
+	qneg = correlations::QVector(0, 0, true);
 
 	edm::Service<TFileService> fs;
 
@@ -139,6 +141,17 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 		trV->Branch(Form("rV0QGap%i", n), rV0QGap[n], Form("rV0QGap%i[24]/D", n));
 		trV->Branch(Form("rQpGap%i", n), rQpGap[n], Form("rQpGap%i[24]/D", n));
 	}
+
+	trV->Branch("rQpos", &rQpos, "rQpos/D");
+	trV->Branch("rQneg", &rQneg, "rQneg/D");
+	trV->Branch("wQpos", &wQpos, "wQpos/D");
+	trV->Branch("wQneg", &wQneg, "wQneg/D");
+
+    trV->Branch("rVpQpos", rVpQpos, "rVpQpos[24]/D");
+    trV->Branch("rVpQneg", rVpQneg, "rVpQneg[24]/D");
+    trV->Branch("wVpQpos", wVpQpos, "wVpQpos[24]/D");
+    trV->Branch("wVpQneg", wVpQneg, "wVpQneg[24]/D");
+
 
 	cout << " cmode_ = " << cmode_ << endl;
 
@@ -237,11 +250,27 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 	}
 
+    rQpos = 0;
+    wQpos = 0;
+    rQneg = 0;
+    wQneg = 0;
+    for ( int i = 0; i < 24; i++ ) {
+        rVpQpos[i] = 0.;
+        wVpQpos[i] = 0.;
+        rVpQneg[i] = 0.;
+        wVpQneg[i] = 0.;
+    }
+
 	for ( int i = 0; i < sz; i++ ) {
 		if ( RFP[i] != 1 ) continue;
 		for ( int n = 1; n < 7; n++ ) {
 			q[n].fill((*hPhi)[i], (*hWeight)[i]);
 		}
+        if ( (*hEta)[i] > 0 ) {
+			qpos.fill((*hPhi)[i], (*hWeight)[i]);
+        } else {
+			qneg.fill((*hPhi)[i], (*hWeight)[i]);
+        }
 	}
 
 	correlations::Result r[7][4];
@@ -250,6 +279,8 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			r[n][np] = cq[n]->calculate(2+2*np, hc[n]);
 		}
 	}
+	correlations::Result rpos = cqpos->calculate(4, hcsub);
+	correlations::Result rneg = cqneg->calculate(4, hcsub);
 
 	// RFP
 	for ( int n = 2; n < 7; n++ ) {
@@ -259,6 +290,8 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			wQ[n][np] = r[n][np].weight();
 		}
 	}
+    rQpos = rpos.sum().real();
+    rQneg = rneg.sum().real();
 
 	// 2part RFP
 	for ( int i = 0; i < sz; i++ ) {
@@ -339,6 +372,35 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			}
 		}
 	}
+    // sub event v2{4}
+    {
+        correlations::Complex qp_pos = 0;
+        correlations::Complex qp_neg = 0;
+        double wt_pos = 0;
+        double wt_neg = 0;
+        correlations::Result rpos = cqpos->calculate(3, hcsub);
+        correlations::Result rneg = cqneg->calculate(3, hcsub);
+
+        for ( int ipt = 0; ipt < Npt_; ipt++ ) {
+            qp = 0;
+            wt = 0;
+            for ( int i = 0; i < sigsz; i++ ) {
+                if ( (*sPt)[i] < ptBin_[ipt] or (*sPt)[i] > ptBin_[ipt+1] ) continue;
+
+                if ( (*sEta)[i] > 0 ) {
+                    qp_pos += (*sWeight)[i] * correlations::Complex( TMath::Cos((*sPhi)[i] * 2) , TMath::Sin((*sPhi)[i] * 2) ) * rneg.sum();
+                    wt_pos += (*sWeight)[i] * rneg.weight();
+                } else {
+                    qp_neg += (*sWeight)[i] * correlations::Complex( TMath::Cos((*sPhi)[i] * 2) , TMath::Sin((*sPhi)[i] * 2) ) * rpos.sum();
+                    wt_neg += (*sWeight)[i] * rpos.weight();
+                }
+            }
+
+            rVpQpos[ipt] = qp_pos.real();
+            rVpQneg[ipt] = qp_neg.real();
+            wVpQpos[ipt] = wt_pos;
+            wVpQneg[ipt] = wt_neg;
+    }
 
 	edm::Handle<int> ch;
 	iEvent.getByLabel(centralityTag_,ch);
@@ -425,6 +487,16 @@ QWCumuDiff::initQ()
 	q[4].resize(hc[4]);
 	q[5].resize(hc[5]);
 	q[6].resize(hc[6]);
+
+	hcsub = correlations::HarmonicVector(4);
+	hcsub[0] = -2;
+	hcsub[1] =  2;
+	hcsub[2] = -2;
+	hcsub[3] =  2;
+
+	qpos.resize(hcsub);
+	qneg.resize(hcsub);
+
 	switch ( cmode_ ) {
 		case 1:
 			cq[1] = new correlations::closed::FromQVector(q[1]);
@@ -433,6 +505,8 @@ QWCumuDiff::initQ()
 			cq[4] = new correlations::closed::FromQVector(q[4]);
 			cq[5] = new correlations::closed::FromQVector(q[5]);
 			cq[6] = new correlations::closed::FromQVector(q[6]);
+			cqpos = new correlations::closed::FromQVector(qpos);
+			cqneg = new correlations::closed::FromQVector(qneg);
 			break;
 		case 2:
 			cq[1] = new correlations::recurrence::FromQVector(q[1]);
@@ -441,6 +515,8 @@ QWCumuDiff::initQ()
 			cq[4] = new correlations::recurrence::FromQVector(q[4]);
 			cq[5] = new correlations::recurrence::FromQVector(q[5]);
 			cq[6] = new correlations::recurrence::FromQVector(q[6]);
+			cqpos = new correlations::recurrence::FromQVector(qpos);
+			cqneg = new correlations::recurrence::FromQVector(qneg);
 			break;
 		case 3:
 			cq[1] = new correlations::recursive::FromQVector(q[1]);
@@ -449,6 +525,8 @@ QWCumuDiff::initQ()
 			cq[4] = new correlations::recursive::FromQVector(q[4]);
 			cq[5] = new correlations::recursive::FromQVector(q[5]);
 			cq[6] = new correlations::recursive::FromQVector(q[6]);
+			cqpos = new correlations::recursive::FromQVector(qpos);
+			cqneg = new correlations::recursive::FromQVector(qneg);
 			break;
 	}
 }
@@ -462,6 +540,8 @@ QWCumuDiff::doneQ()
 	q[4].reset();
 	q[5].reset();
 	q[6].reset();
+    qpos.reset();
+    qneg.reset();
 }
 
 // ------------ method called once each job just before starting event loop  ------------
