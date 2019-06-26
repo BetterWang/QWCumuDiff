@@ -292,6 +292,8 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
     rQpos = rpos.sum().real();
     rQneg = rneg.sum().real();
+    wQpos = rpos.weight();
+    wQneg = rneg.weight();
 
 	// 2part RFP
 	for ( int i = 0; i < sz; i++ ) {
@@ -382,8 +384,10 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         correlations::Result rneg = cqneg->calculate(3, hcsub);
 
         for ( int ipt = 0; ipt < Npt_; ipt++ ) {
-            qp = 0;
-            wt = 0;
+            qp_pos = 0;
+            wt_pos = 0;
+            qp_neg = 0;
+            wt_neg = 0;
             for ( int i = 0; i < sigsz; i++ ) {
                 if ( (*sPt)[i] < ptBin_[ipt] or (*sPt)[i] > ptBin_[ipt+1] ) continue;
 
@@ -395,11 +399,11 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                     wt_neg += (*sWeight)[i] * rpos.weight();
                 }
             }
-
             rVpQpos[ipt] = qp_pos.real();
             rVpQneg[ipt] = qp_neg.real();
             wVpQpos[ipt] = wt_pos;
             wVpQneg[ipt] = wt_neg;
+        }
     }
 
 	edm::Handle<int> ch;
