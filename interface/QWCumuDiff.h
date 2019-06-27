@@ -109,15 +109,23 @@ class QWCumuDiff : public edm::EDAnalyzer {
 		correlations::QVector           q[7];
 		correlations::FromQVector       *cq[7];
 
-        double rQpos;
-        double wQpos;
-        double rVpQpos[24];
-        double wVpQpos[24];
+        double rQpos2;
+        double wQpos2;
+        double rVpQpos2[24];
+        double wVpQpos2[24];
+        double rQpos4;
+        double wQpos4;
+        double rVpQpos4[24];
+        double wVpQpos4[24];
 
-        double rQneg;
-        double wQneg;
-        double rVpQneg[24];
-        double wVpQneg[24];
+        double rQneg2;
+        double wQneg2;
+        double rVpQneg2[24];
+        double wVpQneg2[24];
+        double rQneg4;
+        double wQneg4;
+        double rVpQneg4[24];
+        double wVpQneg4[24];
 
 		correlations::HarmonicVector    hcsub;
 		correlations::QVector           qpos;

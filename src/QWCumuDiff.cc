@@ -142,15 +142,23 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 		trV->Branch(Form("rQpGap%i", n), rQpGap[n], Form("rQpGap%i[24]/D", n));
 	}
 
-	trV->Branch("rQpos", &rQpos, "rQpos/D");
-	trV->Branch("rQneg", &rQneg, "rQneg/D");
-	trV->Branch("wQpos", &wQpos, "wQpos/D");
-	trV->Branch("wQneg", &wQneg, "wQneg/D");
+	trV->Branch("rQpos2", &rQpos2, "rQpos2/D");
+	trV->Branch("rQneg2", &rQneg2, "rQneg2/D");
+	trV->Branch("wQpos2", &wQpos2, "wQpos2/D");
+	trV->Branch("wQneg2", &wQneg2, "wQneg2/D");
+	trV->Branch("rQpos4", &rQpos4, "rQpos4/D");
+	trV->Branch("rQneg4", &rQneg4, "rQneg4/D");
+	trV->Branch("wQpos4", &wQpos4, "wQpos4/D");
+	trV->Branch("wQneg4", &wQneg4, "wQneg4/D");
 
-    trV->Branch("rVpQpos", rVpQpos, "rVpQpos[24]/D");
-    trV->Branch("rVpQneg", rVpQneg, "rVpQneg[24]/D");
-    trV->Branch("wVpQpos", wVpQpos, "wVpQpos[24]/D");
-    trV->Branch("wVpQneg", wVpQneg, "wVpQneg[24]/D");
+    trV->Branch("rVpQpos2", rVpQpos2, "rVpQpos2[24]/D");
+    trV->Branch("rVpQneg2", rVpQneg2, "rVpQneg2[24]/D");
+    trV->Branch("wVpQpos2", wVpQpos2, "wVpQpos2[24]/D");
+    trV->Branch("wVpQneg2", wVpQneg2, "wVpQneg2[24]/D");
+    trV->Branch("rVpQpos4", rVpQpos4, "rVpQpos4[24]/D");
+    trV->Branch("rVpQneg4", rVpQneg4, "rVpQneg4[24]/D");
+    trV->Branch("wVpQpos4", wVpQpos4, "wVpQpos4[24]/D");
+    trV->Branch("wVpQneg4", wVpQneg4, "wVpQneg4[24]/D");
 
 
 	cout << " cmode_ = " << cmode_ << endl;
@@ -250,15 +258,23 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		}
 	}
 
-    rQpos = 0;
-    wQpos = 0;
-    rQneg = 0;
-    wQneg = 0;
+    rQpos2 = 0;
+    wQpos2 = 0;
+    rQneg2 = 0;
+    wQneg2 = 0;
+    rQpos4 = 0;
+    wQpos4 = 0;
+    rQneg4 = 0;
+    wQneg4 = 0;
     for ( int i = 0; i < 24; i++ ) {
-        rVpQpos[i] = 0.;
-        wVpQpos[i] = 0.;
-        rVpQneg[i] = 0.;
-        wVpQneg[i] = 0.;
+        rVpQpos2[i] = 0.;
+        wVpQpos2[i] = 0.;
+        rVpQneg2[i] = 0.;
+        wVpQneg2[i] = 0.;
+        rVpQpos4[i] = 0.;
+        wVpQpos4[i] = 0.;
+        rVpQneg4[i] = 0.;
+        wVpQneg4[i] = 0.;
     }
 
 	for ( int i = 0; i < sz; i++ ) {
@@ -279,8 +295,10 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			r[n][np] = cq[n]->calculate(2+2*np, hc[n]);
 		}
 	}
-	correlations::Result rpos = cqpos->calculate(4, hcsub);
-	correlations::Result rneg = cqneg->calculate(4, hcsub);
+	correlations::Result rpos2 = cqpos->calculate(2, hcsub);
+	correlations::Result rneg2 = cqneg->calculate(2, hcsub);
+	correlations::Result rpos4 = cqpos->calculate(4, hcsub);
+	correlations::Result rneg4 = cqneg->calculate(4, hcsub);
 
 	// RFP
 	for ( int n = 2; n < 7; n++ ) {
@@ -290,10 +308,14 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			wQ[n][np] = r[n][np].weight();
 		}
 	}
-    rQpos = rpos.sum().real();
-    rQneg = rneg.sum().real();
-    wQpos = rpos.weight();
-    wQneg = rneg.weight();
+    rQpos2 = rpos2.sum().real();
+    rQneg2 = rneg2.sum().real();
+    wQpos2 = rpos2.weight();
+    wQneg2 = rneg2.weight();
+    rQpos4 = rpos4.sum().real();
+    rQneg4 = rneg4.sum().real();
+    wQpos4 = rpos4.weight();
+    wQneg4 = rneg4.weight();
 
 	// 2part RFP
 	for ( int i = 0; i < sz; i++ ) {
@@ -376,33 +398,51 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
     // sub event v2{4}
     {
-        correlations::Complex qp_pos = 0;
-        correlations::Complex qp_neg = 0;
-        double wt_pos = 0;
-        double wt_neg = 0;
-        correlations::Result rpos = cqpos->calculate(3, hcsub);
-        correlations::Result rneg = cqneg->calculate(3, hcsub);
+        correlations::Complex qp_pos2 = 0;
+        correlations::Complex qp_neg2 = 0;
+        correlations::Complex qp_pos4 = 0;
+        correlations::Complex qp_neg4 = 0;
+        double wt_pos2 = 0;
+        double wt_neg2 = 0;
+        double wt_pos4 = 0;
+        double wt_neg4 = 0;
+        correlations::Result rpos2 = cqpos->calculate(1, hcsub);
+        correlations::Result rneg2 = cqneg->calculate(1, hcsub);
+        correlations::Result rpos4 = cqpos->calculate(3, hcsub);
+        correlations::Result rneg4 = cqneg->calculate(3, hcsub);
 
         for ( int ipt = 0; ipt < Npt_; ipt++ ) {
-            qp_pos = 0;
-            wt_pos = 0;
-            qp_neg = 0;
-            wt_neg = 0;
+            qp_pos2 = 0;
+            wt_pos2 = 0;
+            qp_neg2 = 0;
+            wt_neg2 = 0;
+            qp_pos4 = 0;
+            wt_pos4 = 0;
+            qp_neg4 = 0;
+            wt_neg4 = 0;
             for ( int i = 0; i < sigsz; i++ ) {
                 if ( (*sPt)[i] < ptBin_[ipt] or (*sPt)[i] > ptBin_[ipt+1] ) continue;
 
                 if ( (*sEta)[i] > 0 ) {
-                    qp_pos += (*sWeight)[i] * correlations::Complex( TMath::Cos((*sPhi)[i] * 2) , TMath::Sin((*sPhi)[i] * 2) ) * rneg.sum();
-                    wt_pos += (*sWeight)[i] * rneg.weight();
+                    qp_pos2 += (*sWeight)[i] * correlations::Complex( TMath::Cos((*sPhi)[i] * 2) , TMath::Sin((*sPhi)[i] * 2) ) * rneg2.sum();
+                    wt_pos2 += (*sWeight)[i] * rneg2.weight();
+                    qp_pos4 += (*sWeight)[i] * correlations::Complex( TMath::Cos((*sPhi)[i] * 2) , TMath::Sin((*sPhi)[i] * 2) ) * rneg4.sum();
+                    wt_pos4 += (*sWeight)[i] * rneg4.weight();
                 } else {
-                    qp_neg += (*sWeight)[i] * correlations::Complex( TMath::Cos((*sPhi)[i] * 2) , TMath::Sin((*sPhi)[i] * 2) ) * rpos.sum();
-                    wt_neg += (*sWeight)[i] * rpos.weight();
+                    qp_neg2 += (*sWeight)[i] * correlations::Complex( TMath::Cos((*sPhi)[i] * 2) , TMath::Sin((*sPhi)[i] * 2) ) * rpos2.sum();
+                    wt_neg2 += (*sWeight)[i] * rpos2.weight();
+                    qp_neg4 += (*sWeight)[i] * correlations::Complex( TMath::Cos((*sPhi)[i] * 2) , TMath::Sin((*sPhi)[i] * 2) ) * rpos4.sum();
+                    wt_neg4 += (*sWeight)[i] * rpos4.weight();
                 }
             }
-            rVpQpos[ipt] = qp_pos.real();
-            rVpQneg[ipt] = qp_neg.real();
-            wVpQpos[ipt] = wt_pos;
-            wVpQneg[ipt] = wt_neg;
+            rVpQpos2[ipt] = qp_pos2.real();
+            rVpQneg2[ipt] = qp_neg2.real();
+            wVpQpos2[ipt] = wt_pos2;
+            wVpQneg2[ipt] = wt_neg2;
+            rVpQpos4[ipt] = qp_pos4.real();
+            rVpQneg4[ipt] = qp_neg4.real();
+            wVpQpos4[ipt] = wt_pos4;
+            wVpQneg4[ipt] = wt_neg4;
         }
     }
 
