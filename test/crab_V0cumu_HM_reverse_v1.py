@@ -34,17 +34,17 @@ config.Site.whitelist = ['T2_CH_CERN']
 #
 
 
-#### 1
+### 1
 #config.Data.inputDataset = '/PAHighMultiplicity1/davidlw-RecoSkim2016_Pbp_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
-#config.General.requestName = 'PAHM1_Kscumu_eff_reverse_v12'
+#config.General.requestName = 'PAHM1_Kscumu_eff_reverse_v12_rsb'
 config.JobType.psetName = 'qwcumu_pPb16_HM1_Ks_eff_v2.py'
-##try:
-##        crabCommand('submit', config = config)
-##except HTTPException as hte:
-##        print "Failed submitting task: %s" % (hte.headers)
-##except ClientException as cle:
-##        print "Failed submitting task: %s" % (cle)
-##
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
 #
 #### 2
 #config.Data.inputDataset = '/PAHighMultiplicity2/davidlw-RecoSkim2016_Pbp_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
@@ -79,20 +79,9 @@ config.JobType.psetName = 'qwcumu_pPb16_HM1_Ks_eff_v2.py'
 #        print "Failed submitting task: %s" % (cle)
 #
 #
-#### 5
-#config.Data.inputDataset = '/PAHighMultiplicity5/davidlw-RecoSkim2016_Pbp_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
-#config.General.requestName = 'PAHM5_Kscumu_eff_reverse_v12'
-##try:
-##        crabCommand('submit', config = config)
-##except HTTPException as hte:
-##        print "Failed submitting task: %s" % (hte.headers)
-##except ClientException as cle:
-##        print "Failed submitting task: %s" % (cle)
-##
-#
-### 6
-config.Data.inputDataset = '/PAHighMultiplicity6/davidlw-RecoSkim2016_Pbp_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
-config.General.requestName = 'PAHM6_Kscumu_eff_reverse_v12_rsb'
+### 5
+config.Data.inputDataset = '/PAHighMultiplicity5/davidlw-RecoSkim2016_Pbp_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
+config.General.requestName = 'PAHM5_Kscumu_eff_reverse_v12_rsb'
 config.Site.whitelist = ['T2_US_Vanderbilt']
 try:
         crabCommand('submit', config = config)
@@ -102,6 +91,18 @@ except ClientException as cle:
         print "Failed submitting task: %s" % (cle)
 
 
+#### 6
+#config.Data.inputDataset = '/PAHighMultiplicity6/davidlw-RecoSkim2016_Pbp_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
+#config.General.requestName = 'PAHM6_Kscumu_eff_reverse_v12_rsb'
+#config.Site.whitelist = ['T2_US_Vanderbilt']
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#
 ### 7
 #config.Data.inputDataset = '/PAHighMultiplicity7/davidlw-RecoSkim2016_Pbp_V0Cascade_v1-97be9aa52ea60cba5455e64649c12464/USER'
 #config.General.requestName = 'PAHM7_Kscumu_eff_reverse_v12_rsb'
