@@ -90,6 +90,14 @@ process.treeLm = cms.EDAnalyzer('QWTreeMaker',
 				name = cms.untracked.string('pdgId')
 				),
 			cms.PSet(
+				tag = cms.untracked.InputTag('QWGenV0Lm', 'pPt'),
+				name = cms.untracked.string('pTrkPt')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWGenV0Lm', 'pPt'),
+				name = cms.untracked.string('pTrkEta')
+				),
+			cms.PSet(
 				tag = cms.untracked.InputTag('QWGenV0Lm', 'pPx'),
 				name = cms.untracked.string('pPx')
 				),
@@ -100,6 +108,14 @@ process.treeLm = cms.EDAnalyzer('QWTreeMaker',
 			cms.PSet(
 				tag = cms.untracked.InputTag('QWGenV0Lm', 'pPz'),
 				name = cms.untracked.string('pPz')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWGenV0Lm', 'nPt'),
+				name = cms.untracked.string('nTrkPt')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWGenV0Lm', 'nPt'),
+				name = cms.untracked.string('nTrkEta')
 				),
 			cms.PSet(
 				tag = cms.untracked.InputTag('QWGenV0Lm', 'nPx'),

@@ -99,54 +99,54 @@ process.HFQ2 = cms.EDProducer('QWCaloQProducer',
 
 process.HFQ3 = process.HFQ2.clone(N = cms.untracked.int32(3))
 
-process.treeHF2 = cms.EDAnalyzer('QWTreeMaker',
-		Vtags = cms.untracked.VPSet(),
-		Dtags = cms.untracked.VPSet(
-#			cms.PSet(
-#				tag = cms.untracked.InputTag('HFQ2', 'abs'),
-#				name = cms.untracked.string('abs')
-#				),
-#			cms.PSet(
-#				tag = cms.untracked.InputTag('HFQ2', 'arg'),
-#				name = cms.untracked.string('arg')
-#				),
-			cms.PSet(
-				tag = cms.untracked.InputTag('HFQ2', 'absp'),
-				name = cms.untracked.string('absp')
-				),
-			cms.PSet(
-				tag = cms.untracked.InputTag('HFQ2', 'absm'),
-				name = cms.untracked.string('absm')
-				),
-			cms.PSet(
-				tag = cms.untracked.InputTag('HFQ2', 'argp'),
-				name = cms.untracked.string('argp')
-				),
-			cms.PSet(
-				tag = cms.untracked.InputTag('HFQ2', 'argm'),
-				name = cms.untracked.string('argm')
-				),
-			cms.PSet(
-				tag = cms.untracked.InputTag('HFQ3', 'absp'),
-				name = cms.untracked.string('absp3')
-				),
-			cms.PSet(
-				tag = cms.untracked.InputTag('HFQ3', 'absm'),
-				name = cms.untracked.string('absm3')
-				),
-			cms.PSet(
-				tag = cms.untracked.InputTag('HFQ3', 'argp'),
-				name = cms.untracked.string('argp3')
-				),
-			cms.PSet(
-				tag = cms.untracked.InputTag('HFQ3', 'argm'),
-				name = cms.untracked.string('argm3')
-				),
-			)
-    )
+
+process.EPOrg = cms.EDProducer('QWEvtPlaneProducer',
+        src = cms.untracked.InputTag('hiEvtPlaneFlat'),
+        level = cms.untracked.int32(0)
+        )
+
+process.EPFlat = cms.EDProducer('QWEvtPlaneProducer',
+        src = cms.untracked.InputTag('hiEvtPlaneFlat'),
+        level = cms.untracked.int32(2)
+        )
+
+process.EPOrgA = cms.EDProducer('QWEvtPlaneProducer',
+        src = cms.untracked.InputTag('hiEvtPlane'),
+        level = cms.untracked.int32(0)
+        )
+
+process.EPFlatA = cms.EDProducer('QWEvtPlaneProducer',
+        src = cms.untracked.InputTag('hiEvtPlane'),
+        level = cms.untracked.int32(2)
+        )
+
 
 process.treeLm = cms.EDAnalyzer('QWTreeMaker',
 		Vtags = cms.untracked.VPSet(
+			cms.PSet(
+				tag = cms.untracked.InputTag('EPOrg', 'angle'),
+				name = cms.untracked.string('EPOrg')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('EPOrg', 'sumSin'),
+				name = cms.untracked.string('EPOrgSin')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('EPOrg', 'sumCos'),
+				name = cms.untracked.string('EPOrgCos')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('EPFlat', 'angle'),
+				name = cms.untracked.string('EPFlat')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('EPFlat', 'sumSin'),
+				name = cms.untracked.string('EPFlatSin')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('EPFlat', 'sumCos'),
+				name = cms.untracked.string('EPFlatCos')
+				),
 			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventLm', 'pt'),
 				name = cms.untracked.string('pt')
@@ -239,10 +239,6 @@ process.treeLm = cms.EDAnalyzer('QWTreeMaker',
 				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkNPxLayer'),
 				name = cms.untracked.string('nTrkNPxLayer')
 				),
-#			cms.PSet(
-#				tag = cms.untracked.InputTag('QWV0EventLm', 'pPhiCM'),
-#				name = cms.untracked.string('pPhiCM')
-#				),
 			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventLm', 'pPxCM'),
 				name = cms.untracked.string('pPxCM')
@@ -255,10 +251,6 @@ process.treeLm = cms.EDAnalyzer('QWTreeMaker',
 				tag = cms.untracked.InputTag('QWV0EventLm', 'pPzCM'),
 				name = cms.untracked.string('pPzCM')
 				),
-#			cms.PSet(
-#				tag = cms.untracked.InputTag('QWV0EventLm', 'nPhiCM'),
-#				name = cms.untracked.string('nPhiCM')
-#				),
 			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventLm', 'nPxCM'),
 				name = cms.untracked.string('nPxCM')
@@ -277,19 +269,32 @@ process.treeLm = cms.EDAnalyzer('QWTreeMaker',
 				tag = cms.untracked.InputTag('dbCent'),
 				name = cms.untracked.string('Cent')
 				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWPrimaryVz'),
+				name = cms.untracked.string('vz')
+				),
 			)
 		)
+
+process.QWVertex = cms.EDProducer('QWVertexProducer',
+        vertexSrc = cms.untracked.InputTag('offlinePrimaryVertices')
+        )
+
+process.QWPrimaryVz = cms.EDProducer('QWVectorSelector',
+        vectSrc = cms.untracked.InputTag('QWVertex', 'vz'),
+        )
+
 
 
 process.ana0 = cms.Path(
         process.eventSelection
-        * process.centralityBin
         * process.dbCent
         * process.QWV0EventLm
+        * process.EPOrg
+        * process.EPFlat
+        * process.QWVertex
+        * process.QWPrimaryVz
         * process.treeLm
-        * process.HFQ2
-        * process.HFQ3
-        * process.treeHF2
         * process.histCentBin
         )
 
