@@ -116,6 +116,7 @@ QWCumuDiff::QWCumuDiff(const edm::ParameterSet& iConfig):
 	trV->Branch("Noff", &gNoff, "Noff/I");
 	trV->Branch("Mult", &gMult, "Mult/I");
 	trV->Branch("NV0", &gV0, "gV0/I");
+	trV->Branch("Vz", &Vz, "Vz/D");
 
 
 	for ( int np = 0; np < 4; np++ ) {
@@ -451,6 +452,7 @@ QWCumuDiff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	gNoff = *ch;
 	gMult = rfp_sz;
 	gV0 = sigsz;
+	Vz  = (*hVz)[0];
 
 //	t->RunId = iEvent.id().run();
 //	t->EventId = iEvent.id().event();

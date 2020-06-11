@@ -86,6 +86,7 @@ class QWCumuDiff : public edm::EDAnalyzer {
 		int gNoff;
 		int gMult;
 		int gV0;
+		double Vz;
 
 		double rQ[7][4];
 		double iQ[7][4];

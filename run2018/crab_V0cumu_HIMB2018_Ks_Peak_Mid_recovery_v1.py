@@ -1,19 +1,19 @@
 from CRABAPI.RawCommand import crabCommand
-from CRABClient.UserUtilities import config
+from CRABClient.UserUtilities import config, getUsernameFromSiteDB
 from CRABClient.ClientExceptions import ClientException
 from httplib import HTTPException
 
 config = config()
 
-config.General.requestName = 'HIMB4_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+config.General.requestName = 'HIMB4_V0Cumu_Ks_Peak_Mid_v2'
 config.General.workArea = 'CrabArea'
 config.General.transferOutputs = True
 config.General.transferLogs = False
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'qwcumu_PbPb18_V0_v2.py'
 #config.JobType.maxJobRuntimeMin = 2500
-config.JobType.inputFiles = ['MC_Full_BDT250_D4.LM.weights.xml']
-config.JobType.pyCfgParams = ['part=LM', 'massRange=SBNeg', 'rap=Mid', 'BDT=0.20']
+config.JobType.inputFiles = ['MC_Full_BDT250_D4.KS.weights.xml']
+config.JobType.pyCfgParams = ['part=KS', 'massRange=Peak', 'rap=Mid']
 config.Data.inputDataset = '/HIMinimumBias4/qwang-V0Skim_v3-9d53152409b8a9b6fb15042030d9bf69/USER'
 config.Data.inputDBS = 'phys03'
 config.Data.splitting = 'FileBased'
@@ -36,50 +36,25 @@ config.Data.allowNonValidInputDataset = True
 #
 
 config.JobType.psetName = 'qwcumu_PbPb18_V0_v2s.py'
-#config.General.requestName = 'HIMB1_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
-#config.Data.inputDataset = '/HIMinimumBias1/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
-#try:
-#        crabCommand('submit', config = config)
-#except HTTPException as hte:
-#        print "Failed submitting task: %s" % (hte.headers)
-#except ClientException as cle:
-#        print "Failed submitting task: %s" % (cle)
-#
+config.Data.unitsPerJob = 1
 
-config.Site.ignoreGlobalBlacklist = True
-config.Data.splitting = 'Automatic'
-#config.General.requestName = 'HIMB2_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.General.requestName = 'HIMB2_V0Cumu_Ks_Peak_Mid_recovery_v1'
 #config.Data.inputDataset = '/HIMinimumBias2/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#config.Data.lumiMask = 'CrabArea/crab_HIMB2_V0Cumu_Ks_Peak_Mid_v2/results/notFinishedLumis.json'
 #try:
 #        crabCommand('submit', config = config)
 #except HTTPException as hte:
 #        print "Failed submitting task: %s" % (hte.headers)
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
-#
-#config.General.requestName = 'HIMB19_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
-#config.Data.inputDataset = '/HIMinimumBias19/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
-#try:
-#        crabCommand('submit', config = config)
-#except HTTPException as hte:
-#        print "Failed submitting task: %s" % (hte.headers)
-#except ClientException as cle:
-#        print "Failed submitting task: %s" % (cle)
-#
-#config.General.requestName = 'HIMB3_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
-#config.Data.inputDataset = '/HIMinimumBias3/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
-#try:
-#        crabCommand('submit', config = config)
-#except HTTPException as hte:
-#        print "Failed submitting task: %s" % (hte.headers)
-#except ClientException as cle:
-#        print "Failed submitting task: %s" % (cle)
-#
-config.General.requestName = 'HIMB18_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
-config.Data.inputDataset = '/HIMinimumBias18/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+
+config.General.requestName = 'HIMB1_V0Cumu_Ks_Peak_Mid_recovery_v1'
+config.Data.inputDataset = '/HIMinimumBias1/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+config.Data.lumiMask = 'CrabArea/crab_HIMB1_V0Cumu_Ks_Peak_Mid_v2/results/notFinishedLumis.json'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
         print "Failed submitting task: %s" % (hte.headers)
 except ClientException as cle:
         print "Failed submitting task: %s" % (cle)
+
