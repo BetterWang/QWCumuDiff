@@ -52,6 +52,12 @@ if options.part == 'LM':
     if options.massRange == 'SBNeg':
         massLow = 1.08
         massHigh = 1.1095
+    if options.massRange == 'SBPos1':
+        massLow = 1.124
+        massHigh = 1.16
+    if options.massRange == 'SBNeg1':
+        massLow = 1.08
+        massHigh = 1.1075
 
 if options.part == 'KS':
     if options.massRange == 'Peak':
@@ -63,6 +69,12 @@ if options.part == 'KS':
     if options.massRange == 'SBNeg':
         massLow = 0.43
         massHigh = 0.489
+    if options.massRange == 'SBPos1':
+        massLow = 0.509
+        massHigh = 0.565
+    if options.massRange == 'SBNeg1':
+        massLow = 0.43
+        massHigh = 0.486
 
 print options.part
 print options.massRange

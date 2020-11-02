@@ -1,11 +1,11 @@
 from CRABAPI.RawCommand import crabCommand
-from CRABClient.UserUtilities import config, getUsernameFromSiteDB
+from CRABClient.UserUtilities import config
 from CRABClient.ClientExceptions import ClientException
 from httplib import HTTPException
 
 config = config()
 
-config.General.requestName = 'HIMB4_V0Tree_v8'
+config.General.requestName = 'HIMB4_V0Tree_v9'
 config.General.workArea = 'CrabArea'
 config.General.transferOutputs = True
 config.General.transferLogs = False
@@ -26,11 +26,21 @@ config.Data.ignoreLocality = True
 config.Site.whitelist = ['T2_US_Vanderbilt']
 config.Site.storageSite = 'T2_CH_CERN'
 config.Data.allowNonValidInputDataset = True
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+
+config.General.requestName = 'HIMB19_V0Tree_v9'
+config.Data.inputDataset = '/HIMinimumBias19/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+config.Data.lumiMask = 'run327237.txt'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
         print "Failed submitting task: %s" % (hte.headers)
 except ClientException as cle:
         print "Failed submitting task: %s" % (cle)
-
 

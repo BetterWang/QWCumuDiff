@@ -186,6 +186,18 @@ process.tree = cms.EDAnalyzer('QWTreeMaker',
 				name = cms.untracked.string('LMpTrkPt')
 				),
 			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'pTrkPx'),
+				name = cms.untracked.string('LMpTrkPx')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'pTrkPy'),
+				name = cms.untracked.string('LMpTrkPy')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'pTrkPz'),
+				name = cms.untracked.string('LMpTrkPz')
+				),
+			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventLm', 'pTrkPtError'),
 				name = cms.untracked.string('LMpTrkPtError')
 				),
@@ -216,6 +228,18 @@ process.tree = cms.EDAnalyzer('QWTreeMaker',
 			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkPt'),
 				name = cms.untracked.string('LMnTrkPt')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkPx'),
+				name = cms.untracked.string('LMnTrkPx')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkPy'),
+				name = cms.untracked.string('LMnTrkPy')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkPz'),
+				name = cms.untracked.string('LMnTrkPz')
 				),
 			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventLm', 'nTrkPtError'),
@@ -294,6 +318,18 @@ process.tree = cms.EDAnalyzer('QWTreeMaker',
 				name = cms.untracked.string('KSpTrkPt')
 				),
 			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventKs', 'pTrkPx'),
+				name = cms.untracked.string('KSpTrkPx')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventKs', 'pTrkPy'),
+				name = cms.untracked.string('KSpTrkPy')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventKs', 'pTrkPz'),
+				name = cms.untracked.string('KSpTrkPz')
+				),
+			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventKs', 'pTrkPtError'),
 				name = cms.untracked.string('KSpTrkPtError')
 				),
@@ -324,6 +360,18 @@ process.tree = cms.EDAnalyzer('QWTreeMaker',
 			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventKs', 'nTrkPt'),
 				name = cms.untracked.string('KSnTrkPt')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventKs', 'nTrkPx'),
+				name = cms.untracked.string('KSnTrkPx')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventKs', 'nTrkPy'),
+				name = cms.untracked.string('KSnTrkPy')
+				),
+			cms.PSet(
+				tag = cms.untracked.InputTag('QWV0EventKs', 'nTrkPz'),
+				name = cms.untracked.string('KSnTrkPz')
 				),
 			cms.PSet(
 				tag = cms.untracked.InputTag('QWV0EventKs', 'nTrkPtError'),
@@ -367,14 +415,21 @@ process.QWPrimaryVz = cms.EDProducer('QWVectorSelector',
         )
 
 process.QWVzFilter15 = cms.EDFilter('QWDoubleFilter',
+        src = cms.untracked.InputTag('QWPrimaryVz'),
+        dmin = cms.untracked.double(-15.),
+        dmax = cms.untracked.double(15.),
+        )
+
+process.QWCentFilter = cms.EDFilter('QWDoubleFilter',
         src = cms.untracked.InputTag('dbCent'),
-        dmax = cms.untracked.double(80.),
+        dmax = cms.untracked.double(160.),
     )
 
 process.ana0 = cms.Path(
         process.eventSelection
         * process.QWVertex
         * process.QWPrimaryVz
+        * process.QWVzFilter15
         * process.dbCent
         * process.QWV0EventLm
         * process.QWV0EventKs

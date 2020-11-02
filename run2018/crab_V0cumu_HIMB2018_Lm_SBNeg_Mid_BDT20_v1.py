@@ -19,7 +19,7 @@ config.Data.inputDBS = 'phys03'
 config.Data.splitting = 'FileBased'
 #config.Data.unitsPerJob = 8
 config.Data.outLFNDirBase = '/store/group/phys_heavyions/qwang/PbPb2018'
-config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/HI/PromptReco/Cert_326381-327560_HI_PromptReco_Collisions18_JSON.txt'
+config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/HI/PromptReco/Cert_326381-327564_HI_PromptReco_Collisions18_JSON.txt'
 config.Data.publication = False
 #config.Data.outputDatasetTag = ''
 config.Data.useParent = True
@@ -75,11 +75,168 @@ config.Data.splitting = 'Automatic'
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
-config.General.requestName = 'HIMB18_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
-config.Data.inputDataset = '/HIMinimumBias18/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#config.General.requestName = 'HIMB18_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias18/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB17_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias17/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB16_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias16/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB15_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias15/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB14_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias14/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB13_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias13/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+
+#config.General.requestName = 'HIMB12_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias12/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB11_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias11/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB10_V0Cumu_Lm_SBNeg_Mid_BDT20_v2'
+#config.Data.inputDataset = '/HIMinimumBias10/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB9_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias9/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB8_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias8/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB7_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias7/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB5_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias5/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB6_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias6/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB0_V0Cumu_Lm_SBNeg_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias0/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB0_V0Cumu_Lm_SBNeg1_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias0/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#config.JobType.pyCfgParams = ['part=LM', 'massRange=SBNeg1', 'rap=Mid', 'BDT=0.20']
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB1_V0Cumu_Lm_SBNeg1_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias1/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#config.JobType.pyCfgParams = ['part=LM', 'massRange=SBNeg1', 'rap=Mid', 'BDT=0.20']
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+config.General.requestName = 'HIMB2_V0Cumu_Lm_SBNeg1_Mid_BDT20_v1'
+config.Data.inputDataset = '/HIMinimumBias2/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+config.JobType.pyCfgParams = ['part=LM', 'massRange=SBNeg1', 'rap=Mid', 'BDT=0.20']
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
         print "Failed submitting task: %s" % (hte.headers)
 except ClientException as cle:
         print "Failed submitting task: %s" % (cle)
+
