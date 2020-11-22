@@ -140,8 +140,95 @@ config.Data.splitting = 'Automatic'
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
-config.General.requestName = 'HIMB7_V0Cumu_Ks_Peak_Mid_v3'
-config.Data.inputDataset = '/HIMinimumBias7/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#config.General.requestName = 'HIMB7_V0Cumu_Ks_Peak_Mid_v3'
+#config.Data.inputDataset = '/HIMinimumBias7/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB8_V0Cumu_Ks_Peak_Mid_v3'
+#config.Data.inputDataset = '/HIMinimumBias8/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB9_V0Cumu_Ks_Peak_Mid_v3'
+#config.Data.inputDataset = '/HIMinimumBias9/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB10_V0Cumu_Ks_Peak_Mid_v3'
+#config.Data.inputDataset = '/HIMinimumBias10/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+
+config.Data.splitting = 'FileBased'
+config.Data.unitsPerJob = 3
+
+#config.General.requestName = 'HIMB11_V0Cumu_Ks_Peak_Mid_v3'
+#config.Data.inputDataset = '/HIMinimumBias11/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB12_V0Cumu_Ks_Peak_Mid_v3'
+#config.Data.inputDataset = '/HIMinimumBias12/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB13_V0Cumu_Ks_Peak_Mid_v3'
+#config.Data.inputDataset = '/HIMinimumBias13/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB14_V0Cumu_Ks_Peak_Mid_v3'
+#config.Data.inputDataset = '/HIMinimumBias14/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+#config.General.requestName = 'HIMB15_V0Cumu_Ks_Peak_Mid_v3'
+#config.Data.inputDataset = '/HIMinimumBias15/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+
+config.JobType.psetName = 'qwcumu_PbPb18_V0_noAPCut_v2s.py'
+config.General.requestName = 'HIMB0_V0Cumu_Ks_Peak_Mid_noAPCut_v3'
+config.Data.inputDataset = '/HIMinimumBias0/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:

@@ -206,8 +206,27 @@ config.Data.splitting = 'Automatic'
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
-config.General.requestName = 'HIMB0_V0Cumu_Lm_Peak_Mid_BDT20_v1'
-config.Data.inputDataset = '/HIMinimumBias0/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#config.General.requestName = 'HIMB0_V0Cumu_Lm_Peak_Mid_BDT20_v1'
+#config.Data.inputDataset = '/HIMinimumBias0/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+config.JobType.psetName = 'qwcumu_PbPb18_V0_noAPCut_v2s.py'
+#config.General.requestName = 'HIMB0_V0Cumu_Lm_Peak_Mid_BDT20_noAPCut_v1'
+#config.Data.inputDataset = '/HIMinimumBias0/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+config.General.requestName = 'HIMB1_V0Cumu_Lm_Peak_Mid_BDT20_noAPCut_v1'
+config.Data.inputDataset = '/HIMinimumBias1/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
