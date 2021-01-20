@@ -1,5 +1,5 @@
 from CRABAPI.RawCommand import crabCommand
-from CRABClient.UserUtilities import config, getUsernameFromSiteDB
+from CRABClient.UserUtilities import config
 from CRABClient.ClientExceptions import ClientException
 from httplib import HTTPException
 
@@ -32,6 +32,27 @@ config.Site.ignoreGlobalBlacklist = True
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
+
+config.JobType.allowUndistributedCMSSW = True
+
+#config.General.requestName = 'PAHM0_H_eta18_reverse_v2'
+#config.JobType.psetName = 'qwcumu_pPb16_HM0_H_eta18_v2.py'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+
+config.General.requestName = 'PAHM0_H_eta24_reverse_v2'
+config.JobType.psetName = 'qwcumu_pPb16_HM0_H_eta24_v2.py'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
 
 
 ##### 1
@@ -96,13 +117,13 @@ config.Site.ignoreGlobalBlacklist = True
 #        print "Failed submitting task: %s" % (cle)
 #
 ##### 7
-config.Data.inputDataset = '/PAHighMultiplicity7/PARun2016C-PromptReco-v1/AOD'
-config.General.requestName = 'PAHM7_H_reverse_v2'
-config.JobType.psetName = 'qwcumu_pPb16_HM7_H_v2.py'
-try:
-        crabCommand('submit', config = config)
-except HTTPException as hte:
-        print "Failed submitting task: %s" % (hte.headers)
-except ClientException as cle:
-        print "Failed submitting task: %s" % (cle)
-
+#config.Data.inputDataset = '/PAHighMultiplicity7/PARun2016C-PromptReco-v1/AOD'
+#config.General.requestName = 'PAHM7_H_reverse_v2'
+#config.JobType.psetName = 'qwcumu_pPb16_HM7_H_v2.py'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
