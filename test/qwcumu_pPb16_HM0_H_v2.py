@@ -115,7 +115,8 @@ process.QWVzFilter15 = cms.EDFilter('QWDoubleFilter',
 process.QWPrimaryVertexSelection = cms.Sequence( process.QWVertex * process.QWPrimaryVz * process.QWVzFilter15 )
 
 process.load("HeavyIonsAnalysis.Configuration.hfCoincFilter_cff")
-process.load("HeavyIonsAnalysis.EventAnalysis.pileUpFilter_cff")
+#process.load("HeavyIonsAnalysis.EventAnalysis.pileUpFilter_cff")
+process.load("HeavyIonsAnalysis.VertexAnalysis.pileUpFilter_cff")
 
 process.eventSelection = cms.Sequence(process.hfCoincFilter * process.PAprimaryVertexFilter * process.NoScraping * process.olvFilter_pPb8TeV_dz1p0 * process.QWPrimaryVertexSelection)
 
