@@ -12,11 +12,27 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v16', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_v19', '')
+
+# Customization
+from HeavyIonsAnalysis.Configuration.CommonFunctions_cff import overrideJEC_pPb8TeV
+process = overrideJEC_pPb8TeV(process)
+
+process.GlobalTag.toGet.extend([
+        cms.PSet(record = cms.string("HeavyIonRcd"),
+                          #tag = cms.string("CentralityTable_HFtowersPlusTrunc200_EPOS8TeV_v80x01_mc"),
+                                  tag = cms.string("CentralityTable_HFtowersPlusTrunc200_EPOS5TeV_v80x01_mc"),
+                                  connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),
+                                  label = cms.untracked.string("HFtowersPlusTruncEpos")
+                              ),
+        cms.PSet(record = cms.string("L1TGlobalPrescalesVetosRcd"),
+                                 tag = cms.string("L1TGlobalPrescalesVetos_Stage2v0_hlt"),
+                                 connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
+                                 )
+])
 
 
-
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 
@@ -86,7 +102,8 @@ process.TFileService = cms.Service("TFileService",
 
 
 
-process.load("HeavyIonsAnalysis.VertexAnalysis.PAPileUpVertexFilter_cff")
+#process.load("HeavyIonsAnalysis.VertexAnalysis.PAPileUpVertexFilter_cff")
+process.load("HeavyIonsAnalysis.VertexAnalysis.pileUpFilter_cff")
 
 process.PAprimaryVertexFilter = cms.EDFilter("VertexSelector",
     src = cms.InputTag("offlinePrimaryVertices"),
@@ -115,8 +132,7 @@ process.QWVzFilter15 = cms.EDFilter('QWDoubleFilter',
 process.QWPrimaryVertexSelection = cms.Sequence( process.QWVertex * process.QWPrimaryVz * process.QWVzFilter15 )
 
 process.load("HeavyIonsAnalysis.Configuration.hfCoincFilter_cff")
-#process.load("HeavyIonsAnalysis.EventAnalysis.pileUpFilter_cff")
-process.load("HeavyIonsAnalysis.VertexAnalysis.pileUpFilter_cff")
+process.load("HeavyIonsAnalysis.JetAnalysis.FullJetSequence_puLimitedDatapPb")
 
 process.eventSelection = cms.Sequence(process.hfCoincFilter * process.PAprimaryVertexFilter * process.NoScraping * process.olvFilter_pPb8TeV_dz1p0 * process.QWPrimaryVertexSelection)
 
@@ -162,7 +178,6 @@ process.QWEventS = process.QWEvent.clone(
         Etamax = cms.untracked.double(1.0)
         )
 
-
 process.QWEventRef2 = cms.EDProducer('QWVector2',
         src = cms.untracked.InputTag('QWEventS', 'ref')
         )
@@ -192,15 +207,15 @@ process.vectPhi150Ks = process.vectPhi.clone(src = cms.untracked.InputTag('QWEve
 process.vectPhi185Ks = process.vectPhi.clone(src = cms.untracked.InputTag('QWEvent', 'phi'))
 process.vectPhi250Ks = process.vectPhi.clone(src = cms.untracked.InputTag('QWEvent', 'phi'))
 
-process.vectEta120Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWEvent', 'eta'))
-process.vectEta150Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWEvent', 'eta'))
-process.vectEta185Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWEvent', 'eta'))
-process.vectEta250Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWEvent', 'eta'))
+process.vectEta120Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWEventS', 'eta'))
+process.vectEta150Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWEventS', 'eta'))
+process.vectEta185Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWEventS', 'eta'))
+process.vectEta250Ks = process.vectEta.clone(src = cms.untracked.InputTag('QWEventS', 'eta'))
 
-process.vectPt120Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWEvent', 'pt'), cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10))
-process.vectPt150Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWEvent', 'pt'), cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10))
-process.vectPt185Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWEvent', 'pt'), cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10))
-process.vectPt250Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWEvent', 'pt'), cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10))
+process.vectPt120Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWEventS', 'pt'), cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10))
+process.vectPt150Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWEventS', 'pt'), cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10))
+process.vectPt185Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWEventS', 'pt'), cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10))
+process.vectPt250Ks = process.vectPt.clone(src = cms.untracked.InputTag('QWEventS', 'pt'), cNbins = cms.untracked.int32(1000), cend = cms.untracked.double(10))
 
 process.vectPhi120 = process.vectPhi.clone()
 process.vectPhi150 = process.vectPhi.clone()
@@ -238,14 +253,46 @@ process.mon150 = cms.Sequence(process.histNoff + process.vectPhi150Ks + process.
 process.mon185 = cms.Sequence(process.histNoff + process.vectPhi185Ks + process.vectPt185Ks + process.vectEta185Ks )
 process.mon250 = cms.Sequence(process.histNoff + process.vectPhi250Ks + process.vectPt250Ks + process.vectEta250Ks )
 
+process.QWJet = cms.EDProducer('QWJetProducer',
+        jetSrc = cms.untracked.InputTag('akPu4PFJets')
+        )
 
-process.ana120 = cms.Path(process.hltHM120*process.eventSelection*process.Noff*process.ppNoffFilter120*process.QWEvent * process.QWEventS * process.QWEventRef2 * process.QWCumuDiff * process.mon120 )
-process.ana150 = cms.Path(process.hltHM150*process.eventSelection*process.Noff*process.ppNoffFilter150*process.QWEvent * process.QWEventS * process.QWEventRef2 * process.QWCumuDiff * process.mon150 )
-process.ana185 = cms.Path(process.hltHM185*process.eventSelection*process.Noff*process.ppNoffFilter185*process.QWEvent * process.QWEventS * process.QWEventRef2 * process.QWCumuDiff * process.mon185 )
-process.ana250 = cms.Path(process.hltHM250*process.eventSelection*process.Noff*process.ppNoffFilter250*process.QWEvent * process.QWEventS * process.QWEventRef2 * process.QWCumuDiff * process.mon250 )
+process.dbNoff = cms.EDProducer('QWInt2Double',
+        src = cms.untracked.InputTag('Noff')
+    )
+
+process.QWJetTree = cms.EDAnalyzer('QWTreeMaker',
+        Vtags = cms.untracked.VPSet(
+            cms.PSet(
+                tag = cms.untracked.InputTag('QWJet', 'pt'),
+                name = cms.untracked.string('pt')
+            ),
+            cms.PSet(
+                tag = cms.untracked.InputTag('QWJet', 'phi'),
+                name = cms.untracked.string('phi')
+            ),
+            cms.PSet(
+                tag = cms.untracked.InputTag('QWJet', 'eta'),
+                name = cms.untracked.string('eta')
+            ),
+        ),
+        Dtags = cms.untracked.VPSet(
+            cms.PSet(
+                tag = cms.untracked.InputTag('dbNoff'),
+                name = cms.untracked.string('Noff')
+            ),
+        )
+    )
+
+process.ana120 = cms.Path(process.hltHM120*process.eventSelection*process.Noff*process.ppNoffFilter120*process.PFTowers*process.akPu4PFJets*process.dbNoff*process.QWJet*process.QWJetTree)
+process.ana150 = cms.Path(process.hltHM150*process.eventSelection*process.Noff*process.ppNoffFilter150*process.PFTowers*process.akPu4PFJets*process.dbNoff*process.QWJet*process.QWJetTree)
+process.ana185 = cms.Path(process.hltHM185*process.eventSelection*process.Noff*process.ppNoffFilter185*process.PFTowers*process.akPu4PFJets*process.dbNoff*process.QWJet*process.QWJetTree)
+process.ana250 = cms.Path(process.hltHM250*process.eventSelection*process.Noff*process.ppNoffFilter250*process.PFTowers*process.akPu4PFJets*process.dbNoff*process.QWJet*process.QWJetTree)
 
 process.RECO = cms.OutputModule("PoolOutputModule",
-		outputCommands = cms.untracked.vstring('keep *'),
+		outputCommands = cms.untracked.vstring('drop *',
+                                         'keep *_*_*_CumuV3'
+                                         ),
 		SelectEvents = cms.untracked.PSet(
 			SelectEvents = cms.vstring('ana120', 'ana150')
 			),
@@ -256,7 +303,7 @@ process.out = cms.EndPath(process.RECO)
 process.schedule = cms.Schedule(
 #	process.ana120,
 #	process.ana150,
-	process.ana185,
-#	process.ana250,
+#	process.ana185,
+	process.ana250,
 #	process.out
 )
