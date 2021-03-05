@@ -26,6 +26,7 @@ config.Data.ignoreLocality = True
 config.Site.whitelist = ['T2_US_Vanderbilt']
 config.Site.storageSite = 'T2_CH_CERN'
 config.Data.allowNonValidInputDataset = True
+config.JobType.allowUndistributedCMSSW = True
 #try:
 #        crabCommand('submit', config = config)
 #except HTTPException as hte:
@@ -33,6 +34,7 @@ config.Data.allowNonValidInputDataset = True
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
+
 config.General.requestName = 'HIMB2_V0Tree_WrongSign_v9'
 config.Data.inputDataset = '/HIMinimumBias2/qwang-V0SkimWrongSign_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
 try:

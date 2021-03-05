@@ -28,11 +28,20 @@ config.Site.whitelist = ['T2_US_Vanderbilt']
 config.Site.storageSite = 'T2_CH_CERN'
 config.Data.allowNonValidInputDataset = True
 config.JobType.allowUndistributedCMSSW = True
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+
+config.General.requestName = 'HIMB1_V0Cumu_Ks_SBNeg_Mid_sysMCBias_v2'
+config.Data.inputDataset = '/HIMinimumBias1/qwang-V0Skim_v3-5f932986cf38f9e8dbd6c3aea7f6c2b4/USER'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
         print "Failed submitting task: %s" % (hte.headers)
 except ClientException as cle:
         print "Failed submitting task: %s" % (cle)
-
 
