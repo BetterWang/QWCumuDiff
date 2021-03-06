@@ -25,7 +25,7 @@ QWJetPtFilter::QWJetPtFilter(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src")),
 	min_(pset.getUntrackedParameter<double>("dmin", std::numeric_limits<double>::min())),
 	max_(pset.getUntrackedParameter<double>("dmax", std::numeric_limits<double>::max())),
-	Etamin_(pset.getUntrackedParameter<double>("Etamin", std::numeric_limits<double>::min())),
+	Etamin_(pset.getUntrackedParameter<double>("Etamin", -std::numeric_limits<double>::max())),
 	Etamax_(pset.getUntrackedParameter<double>("Etamax", std::numeric_limits<double>::max()))
 {
     jetTag_ = consumes<reco::JetView> (src_);
