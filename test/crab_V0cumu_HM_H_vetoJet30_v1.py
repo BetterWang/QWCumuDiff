@@ -26,13 +26,13 @@ config.JobType.allowUndistributedCMSSW = True
 #config.Data.ignoreLocality = True
 #config.Site.whitelist = ['T2_CH_CERN']
 #config.Data.allowNonValidInputDataset = True
-try:
-        crabCommand('submit', config = config)
-except HTTPException as hte:
-        print "Failed submitting task: %s" % (hte.headers)
-except ClientException as cle:
-        print "Failed submitting task: %s" % (cle)
-
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
 
 
 #config.JobType.psetName = 'qwcumu_pPb16_HM1_H_vetoJet30_v1.py'
@@ -107,3 +107,38 @@ except ClientException as cle:
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
+
+##### eta20
+##### 0
+#config.JobType.psetName = 'qwcumu_pPb16_HM0_H_vetoJet30eta20_v1.py'
+#config.General.requestName = 'PAHM0_H_vetoJet30eta20_v1'
+#config.Data.inputDataset = '/PAHighMultiplicity0/PARun2016C-PromptReco-v1/AOD'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+##### 1
+#config.JobType.psetName = 'qwcumu_pPb16_HM1_H_vetoJet30eta20_v1.py'
+#config.General.requestName = 'PAHM1_H_vetoJet30eta20_v1'
+#config.Data.inputDataset = '/PAHighMultiplicity1/PARun2016C-PromptReco-v1/AOD'
+#try:
+#        crabCommand('submit', config = config)
+#except HTTPException as hte:
+#        print "Failed submitting task: %s" % (hte.headers)
+#except ClientException as cle:
+#        print "Failed submitting task: %s" % (cle)
+#
+##### 7
+config.JobType.psetName = 'qwcumu_pPb16_HM7_H_vetoJet30eta20_v1.py'
+config.General.requestName = 'PAHM7_H_vetoJet30eta20_v1'
+config.Data.inputDataset = '/PAHighMultiplicity7/PARun2016C-PromptReco-v1/AOD'
+try:
+        crabCommand('submit', config = config)
+except HTTPException as hte:
+        print "Failed submitting task: %s" % (hte.headers)
+except ClientException as cle:
+        print "Failed submitting task: %s" % (cle)
+

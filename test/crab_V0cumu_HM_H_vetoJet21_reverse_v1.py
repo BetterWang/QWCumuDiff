@@ -5,14 +5,13 @@ from httplib import HTTPException
 
 config = config()
 
-config.General.requestName = 'PAHM0_H_vetoJet30_reverse_v1'
+config.General.requestName = 'PAHM0_H_vetoJet21eta20_reverse_v1'
 config.General.workArea = 'CrabArea'
 config.General.transferOutputs = True
 config.General.transferLogs = True
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'qwcumu_pPb16_HM0_H_vetoJet30_v1.py'
+config.JobType.psetName = 'qwcumu_pPb16_HM0_H_vetoJet21eta20_v1.py'
 config.Data.inputDataset = '/PAHighMultiplicity0/PARun2016C-PromptReco-v1/AOD'
-#config.JobType.inputFiles = ['Hijing_8TeV_dataBS.root']
 #config.Data.inputDBS = 'phys03'
 config.Data.splitting = 'LumiBased'
 config.Data.unitsPerJob = 20
@@ -22,10 +21,10 @@ config.Data.publication = False
 #config.Data.useParent = True
 config.Site.storageSite = 'T2_CH_CERN'
 config.JobType.allowUndistributedCMSSW = True
-#config.Site.ignoreGlobalBlacklist = True
-#config.Data.ignoreLocality = True
-#config.Site.whitelist = ['T2_CH_CERN']
-#config.Data.allowNonValidInputDataset = True
+##config.Site.ignoreGlobalBlacklist = True
+##config.Data.ignoreLocality = True
+##config.Site.whitelist = ['T2_CH_CERN']
+##config.Data.allowNonValidInputDataset = True
 #try:
 #        crabCommand('submit', config = config)
 #except HTTPException as hte:
@@ -33,11 +32,10 @@ config.JobType.allowUndistributedCMSSW = True
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
-
-#config.JobType.psetName = 'qwcumu_pPb16_HM1_H_vetoJet30_v1.py'
-###### 1
+#config.JobType.psetName = 'qwcumu_pPb16_HM1_H_vetoJet21eta20_v1.py'
+##### 1
+#config.General.requestName = 'PAHM1_H_vetoJet21eta20_reverse_v1'
 #config.Data.inputDataset = '/PAHighMultiplicity1/PARun2016C-PromptReco-v1/AOD'
-#config.General.requestName = 'PAHM1_H_vetoJet30_reverse_v1'
 #try:
 #        crabCommand('submit', config = config)
 #except HTTPException as hte:
@@ -45,9 +43,9 @@ config.JobType.allowUndistributedCMSSW = True
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
-###### 2
+##### 2
+#config.General.requestName = 'PAHM2_H_vetoJet21eta20_reverse_v1'
 #config.Data.inputDataset = '/PAHighMultiplicity2/PARun2016C-PromptReco-v1/AOD'
-#config.General.requestName = 'PAHM2_H_vetoJet30_reverse_v1'
 #try:
 #        crabCommand('submit', config = config)
 #except HTTPException as hte:
@@ -55,9 +53,9 @@ config.JobType.allowUndistributedCMSSW = True
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
-###### 3
+##### 3
+#config.General.requestName = 'PAHM3_H_vetoJet21eta20_reverse_v1'
 #config.Data.inputDataset = '/PAHighMultiplicity3/PARun2016C-PromptReco-v1/AOD'
-#config.General.requestName = 'PAHM3_H_vetoJet30_reverse_v1'
 #try:
 #        crabCommand('submit', config = config)
 #except HTTPException as hte:
@@ -65,9 +63,9 @@ config.JobType.allowUndistributedCMSSW = True
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
-###### 4
+##### 4
+#config.General.requestName = 'PAHM4_H_vetoJet21eta20_reverse_v1'
 #config.Data.inputDataset = '/PAHighMultiplicity4/PARun2016C-PromptReco-v1/AOD'
-#config.General.requestName = 'PAHM4_H_vetoJet30_reverse_v1'
 #try:
 #        crabCommand('submit', config = config)
 #except HTTPException as hte:
@@ -75,9 +73,9 @@ config.JobType.allowUndistributedCMSSW = True
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
-###### 5
+##### 5
+#config.General.requestName = 'PAHM5_H_vetoJet21eta20_reverse_v1'
 #config.Data.inputDataset = '/PAHighMultiplicity5/PARun2016C-PromptReco-v1/AOD'
-#config.General.requestName = 'PAHM5_H_vetoJet30_reverse_v1'
 #try:
 #        crabCommand('submit', config = config)
 #except HTTPException as hte:
@@ -85,9 +83,9 @@ config.JobType.allowUndistributedCMSSW = True
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
-###### 6
+##### 6
+#config.General.requestName = 'PAHM6_H_vetoJet21eta20_reverse_v1'
 #config.Data.inputDataset = '/PAHighMultiplicity6/PARun2016C-PromptReco-v1/AOD'
-#config.General.requestName = 'PAHM6_H_vetoJet30_reverse_v1'
 #try:
 #        crabCommand('submit', config = config)
 #except HTTPException as hte:
@@ -95,46 +93,10 @@ config.JobType.allowUndistributedCMSSW = True
 #except ClientException as cle:
 #        print "Failed submitting task: %s" % (cle)
 #
-#config.JobType.psetName = 'qwcumu_pPb16_HM7_H_vetoJet30_v1.py'
-###### 7
-#config.Data.inputDataset = '/PAHighMultiplicity7/PARun2016C-PromptReco-v1/AOD'
-#config.General.requestName = 'PAHM7_H_vetoJet30_reverse_v1'
-#try:
-#        crabCommand('submit', config = config)
-#except HTTPException as hte:
-#        print "Failed submitting task: %s" % (hte.headers)
-#except ClientException as cle:
-#        print "Failed submitting task: %s" % (cle)
-#
-
-
-#### eta20
-#### 0
-#config.JobType.psetName = 'qwcumu_pPb16_HM0_H_vetoJet30eta20_v1.py'
-#config.Data.inputDataset = '/PAHighMultiplicity0/PARun2016C-PromptReco-v1/AOD'
-#config.General.requestName = 'PAHM0_H_vetoJet30eta20_reverse_v1'
-#try:
-#        crabCommand('submit', config = config)
-#except HTTPException as hte:
-#        print "Failed submitting task: %s" % (hte.headers)
-#except ClientException as cle:
-#        print "Failed submitting task: %s" % (cle)
-#
-#### 1
-#config.JobType.psetName = 'qwcumu_pPb16_HM1_H_vetoJet30eta20_v1.py'
-#config.Data.inputDataset = '/PAHighMultiplicity1/PARun2016C-PromptReco-v1/AOD'
-#config.General.requestName = 'PAHM1_H_vetoJet30eta20_reverse_v1'
-#try:
-#        crabCommand('submit', config = config)
-#except HTTPException as hte:
-#        print "Failed submitting task: %s" % (hte.headers)
-#except ClientException as cle:
-#        print "Failed submitting task: %s" % (cle)
-#
+config.JobType.psetName = 'qwcumu_pPb16_HM7_H_vetoJet21eta20_v1.py'
 #### 7
-config.JobType.psetName = 'qwcumu_pPb16_HM7_H_vetoJet30eta20_v1.py'
+config.General.requestName = 'PAHM7_H_vetoJet21eta20_reverse_v1'
 config.Data.inputDataset = '/PAHighMultiplicity7/PARun2016C-PromptReco-v1/AOD'
-config.General.requestName = 'PAHM7_H_vetoJet30eta20_reverse_v1'
 try:
         crabCommand('submit', config = config)
 except HTTPException as hte:
