@@ -27,7 +27,7 @@ private:
 
 QWJetPtFilter::QWJetPtFilter(const edm::ParameterSet& pset) :
 	src_(pset.getUntrackedParameter<edm::InputTag>("src")),
-	min_(pset.getUntrackedParameter<double>("dmin", std::numeric_limits<double>::min())),
+	min_(pset.getUntrackedParameter<double>("dmin",-std::numeric_limits<double>::max())),
 	max_(pset.getUntrackedParameter<double>("dmax", std::numeric_limits<double>::max())),
 	Etamin_(pset.getUntrackedParameter<double>("Etamin", -std::numeric_limits<double>::max())),
 	Etamax_(pset.getUntrackedParameter<double>("Etamax", std::numeric_limits<double>::max())),
@@ -38,6 +38,7 @@ QWJetPtFilter::QWJetPtFilter(const edm::ParameterSet& pset) :
     if ( JER_ > 0. ) {
         bJER_ = true;
         rnd_ = new TRandom3();
+        JER_ = sqrt(std::max((1+JER_)*(1+JER_)-1., 0.));
     } else {
         bJER_ = false;
     }
@@ -54,13 +55,17 @@ bool QWJetPtFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         const reco::Jet& jet = (*jets)[j];
         double jtpt = jet.pt();
         if ( bJER_ ) {
-            double sigma = jtpt * JER_;
-            jtpt = rnd_->Gaus(jtpt, sigma);
+            // https://arxiv.org/pdf/1802.00707.pdf  eq2
+            // for pp C = 0.06, S = 0.8, N = 0
+            // sigma = sqrt( C^2 + S^2/pT + N^2/pT^2 )
+            double sigma = std::sqrt( 0.0036 + 0.64 / jtpt );
+            jtpt = (1 + rnd_->Gaus(0, sigma) * JER_) * jtpt;
         }
         double jteta = jet.eta();
+        //std::cout << " --> jet " << j << " eta = " << jteta << " pt = " << jtpt0 << " smear pt = " << jtpt << " sigma = " << sigma << std::endl;
         if ( (jteta>Etamin_) and (jteta<Etamax_) ) {
             if ( (jtpt < min_) or (jtpt > max_) ) {
-                //std::cout << " --> jet " << j << " eta = " << jteta << " pt = " << jtpt << std::endl;
+                //std::cout << "   --> false" << std::endl;
                 return false;
             }
         }
