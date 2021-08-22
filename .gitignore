@@ -27,3 +27,4 @@ run2018/*
 !run2018/crab_*.py
 !run2018/qw*.py
 !run2018/PbPb18_HIMB_rereco.py
+!run2018/PbPb18_HIMB_miniAOD.py
