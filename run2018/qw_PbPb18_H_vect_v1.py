@@ -153,33 +153,10 @@ process.vectMon80 = cms.Sequence( process.Cent80* process.vectPhi80* process.vec
 
 process.QWEvent.Year = cms.untracked.int32(2018)
 process.QWEvent.chi2 = cms.untracked.double(0.18)
+process.QWEvent.ptMin= cms.untracked.double(0.2)
 process.QWEvent.ptMax= cms.untracked.double(10.0)
-
-
-process.QWEventRef2 = cms.EDProducer('QWVector2',
-        src = cms.untracked.InputTag('QWEventS', 'ref')
-        )
-
-
-process.QWCumuDiff = cms.EDAnalyzer('QWCumuDiff',
-        trackSet = cms.untracked.PSet(
-            Eta = cms.untracked.InputTag('QWEvent', 'eta'),
-            Phi = cms.untracked.InputTag('QWEvent', 'phi'),
-            Ref = cms.untracked.InputTag('QWEvent', 'ref'),
-            Pt  = cms.untracked.InputTag('QWEvent', 'pt'),
-            Weight = cms.untracked.InputTag('QWEvent', 'weight'),
-            ),
-        sigSet = cms.untracked.PSet(
-            Eta = cms.untracked.InputTag   ('QWEventS', 'eta'),
-            Phi = cms.untracked.InputTag   ('QWEventS', 'phi'),
-            Ref = cms.untracked.InputTag   ('QWEventRef2'),
-            Pt = cms.untracked.InputTag    ('QWEventS', 'pt'),
-            Weight = cms.untracked.InputTag('QWEventS', 'weight'),
-            ),
-        vertexZ = cms.untracked.InputTag('QWEvent', "vz"),
-        ptBin = cms.untracked.vdouble(0.2, 0.4, 0.6, 0.8, 1.0, 1.4, 1.8, 2.2, 2.8, 3.6, 4.6,6.0, 7.0, 8.5),
-        centrality = cms.untracked.InputTag('centralityBin', 'HFtowers')
-        )
+process.QWEvent.Etamin = cms.untracked.double(-1.0)
+process.QWEvent.Etamax = cms.untracked.double(1.0)
 
 process.ana0 = cms.Path(
         process.hltMB
